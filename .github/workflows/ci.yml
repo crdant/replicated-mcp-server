@@ -158,9 +158,9 @@ jobs:
         go-version: '1.23'
 
     - name: Run Gosec Security Scanner
-      uses: securecodewarrior/github-action-gosec@master
+      uses: securego/gosec@master
       with:
-        args: './...'
+        args: ./...
 
     - name: Check for vulnerabilities in dependencies
       run: |
