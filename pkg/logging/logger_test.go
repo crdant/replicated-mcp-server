@@ -131,10 +131,8 @@ func TestLogger_LoggingLevels(t *testing.T) {
 				if key, ok := logEntry["key"].(string); !ok || key != "value" {
 					t.Errorf("Expected key field 'value', got %v", key)
 				}
-			} else {
-				if output != "" {
-					t.Errorf("Expected no log output but got: %s", output)
-				}
+			} else if output != "" {
+				t.Errorf("Expected no log output but got: %s", output)
 			}
 		})
 	}

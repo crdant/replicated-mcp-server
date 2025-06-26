@@ -1,12 +1,14 @@
+// Package main provides the entry point for the Replicated MCP Server.
 package main
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
+
 	"github.com/crdant/replicated-mcp-server/pkg/config"
 	"github.com/crdant/replicated-mcp-server/pkg/logging"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -20,9 +22,7 @@ var rootCmd = &cobra.Command{
 	Short: "MCP server for Replicated Vendor Portal API",
 	Long: `A Machine Chat Protocol (MCP) server that interfaces with the Replicated Vendor Portal API, 
 enabling AI agents to interact with Replicated Vendor Portal accounts.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return runServer(cmd, args)
-	},
+	RunE:    runServer,
 	Version: fmt.Sprintf("%s (Built: %s, Commit: %s)", version, buildDate, commit),
 }
 
@@ -30,12 +30,13 @@ func init() {
 	// Define flags and configuration settings
 	rootCmd.PersistentFlags().String("api-token", "", "Replicated Vendor Portal API token")
 	rootCmd.PersistentFlags().String("log-level", "fatal", "Log level (fatal, error, info, debug, trace)")
-	rootCmd.PersistentFlags().Int("timeout", 30, "API request timeout in seconds")
+	const defaultTimeout = 30
+	rootCmd.PersistentFlags().Int("timeout", defaultTimeout, "API request timeout in seconds")
 	rootCmd.PersistentFlags().String("endpoint", "", "API endpoint (hidden)")
-	rootCmd.PersistentFlags().MarkHidden("endpoint")
+	_ = rootCmd.PersistentFlags().MarkHidden("endpoint")
 }
 
-func runServer(cmd *cobra.Command, args []string) error {
+func runServer(cmd *cobra.Command, _ []string) error {
 	// Load configuration from environment variables and CLI flags
 	cfg, err := config.Load(cmd)
 	if err != nil {
@@ -57,7 +58,7 @@ func runServer(cmd *cobra.Command, args []string) error {
 	// TODO: Start server
 
 	logger.Info("Server initialization complete - MCP server would start here")
-	
+
 	return nil
 }
 

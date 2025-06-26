@@ -1,3 +1,6 @@
+// Package logging provides structured logging capabilities for the Replicated MCP Server.
+// It uses Go's slog package with JSON output directed to stderr, maintaining separation
+// between logging and MCP protocol communication on stdout.
 package logging
 
 import (
@@ -28,7 +31,7 @@ type slogLogger struct {
 // Custom log levels
 const (
 	LevelTrace = slog.Level(-8) // More verbose than Debug (-4)
-	LevelFatal = slog.Level(12)  // More severe than Error (8)
+	LevelFatal = slog.Level(12) // More severe than Error (8)
 )
 
 // NewLogger creates a new structured logger with the specified level
@@ -40,11 +43,11 @@ func NewLogger(level string) Logger {
 // NewLoggerWithWriter creates a logger with a custom writer (useful for testing)
 func NewLoggerWithWriter(level string, writer io.Writer) Logger {
 	slogLevel := parseLogLevel(level)
-	
+
 	// Create custom handler options
 	opts := &slog.HandlerOptions{
 		Level: slogLevel,
-		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+		ReplaceAttr: func(_ []string, a slog.Attr) slog.Attr {
 			// Customize level names for our custom levels
 			if a.Key == slog.LevelKey {
 				switch a.Value.Any().(slog.Level) {
@@ -52,6 +55,14 @@ func NewLoggerWithWriter(level string, writer io.Writer) Logger {
 					a.Value = slog.StringValue("TRACE")
 				case LevelFatal:
 					a.Value = slog.StringValue("FATAL")
+				case slog.LevelDebug:
+					a.Value = slog.StringValue("DEBUG")
+				case slog.LevelInfo:
+					a.Value = slog.StringValue("INFO")
+				case slog.LevelWarn:
+					a.Value = slog.StringValue("WARN")
+				case slog.LevelError:
+					a.Value = slog.StringValue("ERROR")
 				}
 			}
 			return a
@@ -68,18 +79,27 @@ func NewLoggerWithWriter(level string, writer io.Writer) Logger {
 	}
 }
 
+// Log level constants
+const (
+	logLevelTrace = "trace"
+	logLevelDebug = "debug"
+	logLevelInfo  = "info"
+	logLevelError = "error"
+	logLevelFatal = "fatal"
+)
+
 // parseLogLevel converts string level to slog.Level
 func parseLogLevel(level string) slog.Level {
 	switch strings.ToLower(level) {
-	case "trace":
+	case logLevelTrace:
 		return LevelTrace
-	case "debug":
+	case logLevelDebug:
 		return slog.LevelDebug
-	case "info":
+	case logLevelInfo:
 		return slog.LevelInfo
-	case "error":
+	case logLevelError:
 		return slog.LevelError
-	case "fatal":
+	case logLevelFatal:
 		return LevelFatal
 	default:
 		return LevelFatal // Default to most restrictive
@@ -121,7 +141,7 @@ func (l *slogLogger) With(args ...any) Logger {
 }
 
 // WithContext returns a new logger with context
-func (l *slogLogger) WithContext(ctx context.Context) Logger {
+func (l *slogLogger) WithContext(_ context.Context) Logger {
 	// For now, return the same logger
 	// In the future, we could extract values from context
 	return l
@@ -136,15 +156,17 @@ func (l *slogLogger) IsLevelEnabled(level string) bool {
 func (l *slogLogger) GetLevel() string {
 	switch l.level {
 	case LevelTrace:
-		return "trace"
+		return logLevelTrace
 	case slog.LevelDebug:
-		return "debug"
+		return logLevelDebug
 	case slog.LevelInfo:
-		return "info"
+		return logLevelInfo
+	case slog.LevelWarn:
+		return "warn"
 	case slog.LevelError:
-		return "error"
+		return logLevelError
 	case LevelFatal:
-		return "fatal"
+		return logLevelFatal
 	default:
 		return "unknown"
 	}
@@ -152,5 +174,5 @@ func (l *slogLogger) GetLevel() string {
 
 // LogLevels returns all valid log level names
 func LogLevels() []string {
-	return []string{"trace", "debug", "info", "error", "fatal"}
+	return []string{logLevelTrace, logLevelDebug, logLevelInfo, logLevelError, logLevelFatal}
 }

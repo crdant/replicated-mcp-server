@@ -125,7 +125,7 @@ func TestLoad(t *testing.T) {
 
 			// Create test command with flags
 			cmd := createTestCommand()
-			
+
 			// Build command line args from flags
 			var args []string
 			if tt.flags != nil {
@@ -138,11 +138,11 @@ func TestLoad(t *testing.T) {
 					}
 				}
 			}
-			
+
 			// Parse the flags to simulate actual command execution
 			if len(args) > 0 {
 				cmd.SetArgs(args)
-				cmd.ParseFlags(args)
+				_ = cmd.ParseFlags(args)
 			}
 
 			got, err := Load(cmd)
@@ -364,7 +364,7 @@ func clearTestEnv() {
 func createTestCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "test",
-		Run: func(cmd *cobra.Command, args []string) {},
+		Run: func(_ *cobra.Command, _ []string) {},
 	}
 
 	// Add the same flags as the real application

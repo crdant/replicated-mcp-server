@@ -1,3 +1,6 @@
+// Package config provides configuration management for the Replicated MCP Server.
+// It supports loading configuration from environment variables and CLI flags,
+// with comprehensive validation and helpful error messages.
 package config
 
 import (
@@ -28,7 +31,7 @@ const (
 	MaxTimeout      = 300 * time.Second
 )
 
-// Valid log levels
+// ValidLogLevels contains all supported log level names
 var ValidLogLevels = []string{"fatal", "error", "info", "debug", "trace"}
 
 // Load creates a new Config by loading from environment variables and CLI flags
@@ -134,18 +137,19 @@ func (c *Config) Validate() error {
 
 	// Validate API Token
 	if c.APIToken == "" {
-		errors = append(errors, "API token is required. Set REPLICATED_API_TOKEN environment variable or use --api-token flag")
+		errors = append(errors, "API token is required. Set REPLICATED_API_TOKEN environment variable "+
+			"or use --api-token flag")
 	}
 
 	// Validate Log Level
 	if !isValidLogLevel(c.LogLevel) {
-		errors = append(errors, fmt.Sprintf("invalid log level '%s'. Valid levels are: %s", 
+		errors = append(errors, fmt.Sprintf("invalid log level '%s'. Valid levels are: %s",
 			c.LogLevel, strings.Join(ValidLogLevels, ", ")))
 	}
 
 	// Validate Timeout
 	if c.Timeout < MinTimeout || c.Timeout > MaxTimeout {
-		errors = append(errors, fmt.Sprintf("timeout must be between %v and %v seconds, got %v", 
+		errors = append(errors, fmt.Sprintf("timeout must be between %v and %v seconds, got %v",
 			MinTimeout.Seconds(), MaxTimeout.Seconds(), c.Timeout.Seconds()))
 	}
 
@@ -154,7 +158,8 @@ func (c *Config) Validate() error {
 		if u, err := url.Parse(c.Endpoint); err != nil {
 			errors = append(errors, fmt.Sprintf("invalid endpoint URL '%s': %v", c.Endpoint, err))
 		} else if u.Scheme == "" || u.Host == "" {
-			errors = append(errors, fmt.Sprintf("invalid endpoint URL '%s': must include scheme and host (e.g., https://api.example.com)", c.Endpoint))
+			errors = append(errors, fmt.Sprintf("invalid endpoint URL '%s': must include scheme and host "+
+				"(e.g., https://api.example.com)", c.Endpoint))
 		}
 	}
 
@@ -182,12 +187,12 @@ func (c *Config) String() string {
 	if endpoint == "" {
 		endpoint = "(default)"
 	}
-	
+
 	token := "(not set)"
 	if c.APIToken != "" {
 		token = "(set)"
 	}
 
-	return fmt.Sprintf("Config{APIToken: %s, LogLevel: %s, Timeout: %v, Endpoint: %s}", 
+	return fmt.Sprintf("Config{APIToken: %s, LogLevel: %s, Timeout: %v, Endpoint: %s}",
 		token, c.LogLevel, c.Timeout, endpoint)
 }
