@@ -3,8 +3,6 @@ run:
   go: "1.23"
 
 linters-settings:
-  govet:
-    shadow: true
   gocyclo:
     min-complexity: 15
   dupl:
@@ -78,6 +76,7 @@ linters:
     - nolintlint
     - revive
     - rowserrcheck
+    - shadow
     - staticcheck
     - stylecheck
     - typecheck
