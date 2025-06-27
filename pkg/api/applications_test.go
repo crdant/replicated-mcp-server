@@ -10,6 +10,12 @@ import (
 	"time"
 )
 
+// Test constants
+const (
+	testMethodGET = "GET"
+	testPathApps  = "/vendor/v3/apps"
+)
+
 func TestApplicationService_ListApplications(t *testing.T) {
 	tests := []struct {
 		name                  string
@@ -105,10 +111,10 @@ func TestApplicationService_ListApplications(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				// Verify request method and path
-				if r.Method != "GET" {
+				if r.Method != testMethodGET {
 					t.Errorf("Expected GET request, got %s", r.Method)
 				}
-				if r.URL.Path != "/vendor/v3/apps" {
+				if r.URL.Path != testPathApps {
 					t.Errorf("Expected path /vendor/v3/apps, got %s", r.URL.Path)
 				}
 
@@ -233,7 +239,7 @@ func TestApplicationService_GetApplication(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.Method != "GET" {
+				if r.Method != testMethodGET {
 					t.Errorf("Expected GET request, got %s", r.Method)
 				}
 
@@ -296,7 +302,7 @@ func TestApplicationService_GetApplication(t *testing.T) {
 }
 
 func TestApplicationService_ContextCancellation(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		time.Sleep(100 * time.Millisecond)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"applications": []}`)
@@ -498,10 +504,10 @@ func TestApplicationService_SearchApplications(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.Method != "GET" {
+				if r.Method != testMethodGET {
 					t.Errorf("Expected GET request, got %s", r.Method)
 				}
-				if r.URL.Path != "/vendor/v3/apps" {
+				if r.URL.Path != testPathApps {
 					t.Errorf("Expected path /vendor/v3/apps, got %s", r.URL.Path)
 				}
 

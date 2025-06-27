@@ -5,10 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/crdant/replicated-mcp-server/pkg/models"
+)
+
+// HTTP status code constants
+const (
+	httpErrorThreshold = http.StatusBadRequest
 )
 
 // ApplicationService provides methods for interacting with application APIs
@@ -34,7 +40,10 @@ type ApplicationList struct {
 }
 
 // ListApplications retrieves all applications accessible to the authenticated team
-func (s *ApplicationService) ListApplications(ctx context.Context, opts *ListApplicationsOptions) (*ApplicationList, error) {
+func (s *ApplicationService) ListApplications(
+	ctx context.Context,
+	opts *ListApplicationsOptions,
+) (*ApplicationList, error) {
 	path := "/vendor/v3/apps"
 
 	// Build query parameters
@@ -52,7 +61,7 @@ func (s *ApplicationService) ListApplications(ctx context.Context, opts *ListApp
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 400 {
+	if resp.StatusCode >= httpErrorThreshold {
 		apiErr := s.client.ConvertHTTPError(resp)
 		return nil, fmt.Errorf("API error: %w", apiErr)
 	}
@@ -89,7 +98,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, id string) (*mo
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 400 {
+	if resp.StatusCode >= httpErrorThreshold {
 		apiErr := s.client.ConvertHTTPError(resp)
 		return nil, fmt.Errorf("API error: %w", apiErr)
 	}
@@ -112,7 +121,11 @@ func (s *ApplicationService) GetApplication(ctx context.Context, id string) (*mo
 }
 
 // SearchApplications searches for applications using client-side filtering of the list endpoint
-func (s *ApplicationService) SearchApplications(ctx context.Context, query string, opts *ListApplicationsOptions) (*ApplicationList, error) {
+func (s *ApplicationService) SearchApplications(
+	ctx context.Context,
+	query string,
+	opts *ListApplicationsOptions,
+) (*ApplicationList, error) {
 	if strings.TrimSpace(query) == "" {
 		return nil, fmt.Errorf("search query is required")
 	}
@@ -129,12 +142,13 @@ func (s *ApplicationService) SearchApplications(ctx context.Context, query strin
 	var filteredApps []models.Application
 	queryLower := strings.ToLower(strings.TrimSpace(query))
 
-	for _, app := range allApps.Applications {
+	for i := range allApps.Applications {
+		app := &allApps.Applications[i]
 		// Search in name, slug, and description (case-insensitive)
 		if strings.Contains(strings.ToLower(app.Name), queryLower) ||
 			strings.Contains(strings.ToLower(app.Slug), queryLower) ||
 			strings.Contains(strings.ToLower(app.Description), queryLower) {
-			filteredApps = append(filteredApps, app)
+			filteredApps = append(filteredApps, *app)
 		}
 	}
 
