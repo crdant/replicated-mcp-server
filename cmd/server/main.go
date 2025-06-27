@@ -2,13 +2,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/spf13/cobra"
 
 	"github.com/crdant/replicated-mcp-server/pkg/config"
 	"github.com/crdant/replicated-mcp-server/pkg/logging"
+	"github.com/crdant/replicated-mcp-server/pkg/mcp"
 )
 
 var (
@@ -53,12 +57,33 @@ func runServer(cmd *cobra.Command, _ []string) error {
 		"commit", commit,
 		"config", cfg.String())
 
-	// TODO: Initialize MCP server (Step 4)
-	// TODO: Initialize API client (Step 3)
-	// TODO: Start server
+	// Initialize MCP server
+	mcpServer, err := mcp.NewServer(cfg, logger)
+	if err != nil {
+		return fmt.Errorf("failed to initialize MCP server: %w", err)
+	}
 
-	logger.Info("Server initialization complete - MCP server would start here")
+	// Set up context for graceful shutdown
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
+	// Handle shutdown signals
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		sig := <-sigChan
+		logger.Info("Received shutdown signal", "signal", sig)
+		cancel()
+	}()
+
+	// Start MCP server (this blocks until shutdown)
+	logger.Info("Starting MCP server - ready for AI agent connections")
+	if err := mcpServer.Start(ctx); err != nil {
+		return fmt.Errorf("MCP server error: %w", err)
+	}
+
+	logger.Info("Server shutdown complete")
 	return nil
 }
 
