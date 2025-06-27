@@ -122,7 +122,7 @@ func TestClient_Authentication(t *testing.T) {
 			if !tt.wantError {
 				// Test that the client has the expected headers
 				headers := client.GetAuthHeaders()
-				expectedAuth := "Bearer " + tt.apiToken
+				expectedAuth := tt.apiToken
 				if headers.Get("Authorization") != expectedAuth {
 					t.Errorf("Authorization header = %v, want %v", headers.Get("Authorization"), expectedAuth)
 				}
@@ -138,8 +138,8 @@ func TestClient_HTTPMethods(t *testing.T) {
 	// Create a test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify authentication headers
-		if auth := r.Header.Get("Authorization"); auth != "Bearer test-token" {
-			t.Errorf("Expected Authorization header 'Bearer test-token', got '%s'", auth)
+		if auth := r.Header.Get("Authorization"); auth != "test-token" {
+			t.Errorf("Expected Authorization header 'test-token', got '%s'", auth)
 		}
 		if ua := r.Header.Get("User-Agent"); ua != testUserAgent {
 			t.Errorf("Expected User-Agent '%s', got '%s'", testUserAgent, ua)

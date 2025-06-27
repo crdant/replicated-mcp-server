@@ -57,7 +57,7 @@ func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*Client, err
 // GetAuthHeaders returns the authentication headers for API requests
 func (c *Client) GetAuthHeaders() http.Header {
 	headers := make(http.Header)
-	headers.Set("Authorization", "Bearer "+c.config.APIToken)
+	headers.Set("Authorization", c.config.APIToken)
 	headers.Set("User-Agent", DefaultUserAgent)
 	return headers
 }
