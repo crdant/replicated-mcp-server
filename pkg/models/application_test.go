@@ -193,8 +193,13 @@ func TestApplication_Validate(t *testing.T) {
 				Slug:        "Test_App",
 				Description: strings.Repeat("a", 1001),
 			},
-			wantErr:     true,
-			errContains: []string{"application ID is required", "application name must be 255 characters or less", "application slug must contain only lowercase letters, numbers, and hyphens", "team ID is required"},
+			wantErr: true,
+			errContains: []string{
+				"application ID is required",
+				"application name must be 255 characters or less",
+				"application slug must contain only lowercase letters, numbers, and hyphens",
+				"team ID is required",
+			},
 		},
 	}
 

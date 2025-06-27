@@ -9,8 +9,6 @@ import (
 // Customer validation constants
 const (
 	MaxCustomerNameLength = 255
-	MaxKeyLength          = 100
-	MaxValueLength        = 500
 	EmailParts            = 2
 )
 
@@ -71,47 +69,47 @@ var validLicenseTypes = []string{
 func (c *Customer) Validate() error {
 	var errors []string
 
-	// Validate ID
+	errors = append(errors, c.validateBasicFields()...)
+	errors = append(errors, c.validateTimestamps()...)
+	errors = append(errors, c.validateKeyValueMaps()...)
+
+	if len(errors) > 0 {
+		return fmt.Errorf("customer validation errors:\n  - %s", strings.Join(errors, "\n  - "))
+	}
+
+	return nil
+}
+
+// validateBasicFields validates basic customer fields
+func (c *Customer) validateBasicFields() []string {
+	var errors []string
+
 	if c.ID == "" {
 		errors = append(errors, "customer ID is required")
 	}
-
-	// Validate ApplicationID
 	if c.ApplicationID == "" {
 		errors = append(errors, "application ID is required")
 	}
-
-	// Validate Name
 	if c.Name == "" {
 		errors = append(errors, "customer name is required")
 	} else if len(c.Name) > MaxCustomerNameLength {
 		errors = append(errors, "customer name must be 255 characters or less")
 	}
-
-	// Validate Email (if provided)
 	if c.Email != "" && !isValidEmail(c.Email) {
 		errors = append(errors, "customer email must be a valid email address")
 	}
-
-	// Validate ChannelID
 	if c.ChannelID == "" {
 		errors = append(errors, "channel ID is required")
 	}
-
-	// Validate Type
 	if c.Type == "" {
 		errors = append(errors, "customer type is required")
 	} else if !isValidCustomerType(c.Type) {
 		errors = append(errors, fmt.Sprintf("invalid customer type '%s'. Valid types are: %s",
 			c.Type, strings.Join(validCustomerTypes, ", ")))
 	}
-
-	// Validate LicenseID
 	if c.LicenseID == "" {
 		errors = append(errors, "license ID is required")
 	}
-
-	// Validate LicenseType
 	if c.LicenseType == "" {
 		errors = append(errors, "license type is required")
 	} else if !isValidLicenseType(c.LicenseType) {
@@ -119,7 +117,13 @@ func (c *Customer) Validate() error {
 			c.LicenseType, strings.Join(validLicenseTypes, ", ")))
 	}
 
-	// Validate timestamps
+	return errors
+}
+
+// validateTimestamps validates customer timestamp fields
+func (c *Customer) validateTimestamps() []string {
+	var errors []string
+
 	if c.CreatedAt.IsZero() {
 		errors = append(errors, "created_at timestamp is required")
 	}
@@ -129,59 +133,32 @@ func (c *Customer) Validate() error {
 	if !c.CreatedAt.IsZero() && !c.UpdatedAt.IsZero() && c.UpdatedAt.Before(c.CreatedAt) {
 		errors = append(errors, "updated_at must be equal to or after created_at")
 	}
-
-	// Validate ArchivedAt if provided
 	if c.ArchivedAt != nil {
 		if c.ArchivedAt.Before(c.CreatedAt) {
 			errors = append(errors, "archived_at must be equal to or after created_at")
 		}
-		// If archived_at is set, is_archived should be true
 		if !c.IsArchived {
 			errors = append(errors, "is_archived must be true when archived_at is set")
 		}
 	}
-
-	// Validate archived state consistency
 	if c.IsArchived && c.ArchivedAt == nil {
 		errors = append(errors, "archived_at is required when is_archived is true")
 	}
-
-	// Validate ExpiresAt if provided
 	if c.ExpiresAt != nil && c.ExpiresAt.Before(c.CreatedAt) {
 		errors = append(errors, "expires_at must be equal to or after created_at")
 	}
 
-	// Validate entitlements
-	for key, value := range c.Entitlements {
-		if key == "" {
-			errors = append(errors, "entitlement keys cannot be empty")
-		}
-		if len(key) > MaxKeyLength {
-			errors = append(errors, "entitlement keys must be 100 characters or less")
-		}
-		if len(value) > MaxValueLength {
-			errors = append(errors, "entitlement values must be 500 characters or less")
-		}
-	}
+	return errors
+}
 
-	// Validate custom fields
-	for key, value := range c.CustomFields {
-		if key == "" {
-			errors = append(errors, "custom field keys cannot be empty")
-		}
-		if len(key) > MaxKeyLength {
-			errors = append(errors, "custom field keys must be 100 characters or less")
-		}
-		if len(value) > MaxValueLength {
-			errors = append(errors, "custom field values must be 500 characters or less")
-		}
-	}
+// validateKeyValueMaps validates entitlements and custom fields
+func (c *Customer) validateKeyValueMaps() []string {
+	var errors []string
 
-	if len(errors) > 0 {
-		return fmt.Errorf("customer validation errors:\n  - %s", strings.Join(errors, "\n  - "))
-	}
+	errors = append(errors, validateKeyValueMap(c.Entitlements, "entitlement")...)
+	errors = append(errors, validateKeyValueMap(c.CustomFields, "custom field")...)
 
-	return nil
+	return errors
 }
 
 // isValidCustomerType checks if the provided customer type is valid

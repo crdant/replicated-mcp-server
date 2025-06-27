@@ -330,7 +330,9 @@ func TestChannel_JSONMarshaling(t *testing.T) {
 
 func TestIsValidChannelSlug(t *testing.T) {
 	validSlugs := []string{"stable", "beta123", "release-candidate", "release-candidate-v2"}
-	invalidSlugs := []string{"", "Stable", "release_candidate", "release candidate", "-stable", "stable-", "stable@channel"}
+	invalidSlugs := []string{
+		"", "Stable", "release_candidate", "release candidate", "-stable", "stable-", "stable@channel",
+	}
 
 	testSlugValidation(t, "isValidChannelSlug", isValidChannelSlug, validSlugs, invalidSlugs)
 }
@@ -397,7 +399,8 @@ func TestChannel_String(t *testing.T) {
 	}
 
 	str := channel.String()
-	expected := "Channel{ID: ch-123, ApplicationID: app-456, Name: Stable, Slug: stable, IsDefault: true, IsArchived: false}"
+	expected := "Channel{ID: ch-123, ApplicationID: app-456, Name: Stable, " +
+		"Slug: stable, IsDefault: true, IsArchived: false}"
 
 	if str != expected {
 		t.Errorf("Channel.String() = %v, want %v", str, expected)

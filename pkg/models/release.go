@@ -9,9 +9,7 @@ import (
 
 // Release validation constants
 const (
-	MaxNotesLength         = 10000
-	MaxMetadataKeyLength   = 100
-	MaxMetadataValueLength = 500
+	MaxNotesLength = 10000
 )
 
 // Release represents a Replicated application release
@@ -47,35 +45,45 @@ var validReleaseStatuses = []string{
 }
 
 // semVerRegex matches semantic version format (X.Y.Z with optional pre-release and build metadata)
-var semVerRegex = regexp.MustCompile(`^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$`)
+var semVerRegex = regexp.MustCompile(
+	`^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)` +
+		`(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?` +
+		`(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$`,
+)
 
 // Validate ensures the Release struct contains valid data
 func (r *Release) Validate() error {
 	var errors []string
 
-	// Validate ID
+	errors = append(errors, r.validateBasicFields()...)
+	errors = append(errors, r.validateTimestamps()...)
+	errors = append(errors, r.validateOptionalFields()...)
+
+	if len(errors) > 0 {
+		return fmt.Errorf("release validation errors:\n  - %s", strings.Join(errors, "\n  - "))
+	}
+
+	return nil
+}
+
+// validateBasicFields validates basic release fields
+func (r *Release) validateBasicFields() []string {
+	var errors []string
+
 	if r.ID == "" {
 		errors = append(errors, "release ID is required")
 	}
-
-	// Validate ApplicationID
 	if r.ApplicationID == "" {
 		errors = append(errors, "application ID is required")
 	}
-
-	// Validate Version
 	if r.Version == "" {
 		errors = append(errors, "release version is required")
 	} else if !isValidSemanticVersion(r.Version) {
 		errors = append(errors, "release version must follow semantic versioning format (e.g., 1.0.0)")
 	}
-
-	// Validate Sequence
 	if r.Sequence < 0 {
 		errors = append(errors, "release sequence must be non-negative")
 	}
-
-	// Validate Status
 	if r.Status == "" {
 		errors = append(errors, "release status is required")
 	} else if !isValidReleaseStatus(r.Status) {
@@ -83,7 +91,13 @@ func (r *Release) Validate() error {
 			r.Status, strings.Join(validReleaseStatuses, ", ")))
 	}
 
-	// Validate timestamps
+	return errors
+}
+
+// validateTimestamps validates release timestamp fields
+func (r *Release) validateTimestamps() []string {
+	var errors []string
+
 	if r.CreatedAt.IsZero() {
 		errors = append(errors, "created_at timestamp is required")
 	}
@@ -93,42 +107,27 @@ func (r *Release) Validate() error {
 	if !r.CreatedAt.IsZero() && !r.UpdatedAt.IsZero() && r.UpdatedAt.Before(r.CreatedAt) {
 		errors = append(errors, "updated_at must be equal to or after created_at")
 	}
-
-	// Validate ReleasedAt if provided
-	if r.ReleasedAt != nil {
-		if r.ReleasedAt.Before(r.CreatedAt) {
-			errors = append(errors, "released_at must be equal to or after created_at")
-		}
+	if r.ReleasedAt != nil && r.ReleasedAt.Before(r.CreatedAt) {
+		errors = append(errors, "released_at must be equal to or after created_at")
 	}
-
-	// If status is released, released_at should be set
 	if r.Status == ReleaseStatusReleased && r.ReleasedAt == nil {
 		errors = append(errors, "released_at is required when status is 'released'")
 	}
 
-	// Validate optional fields
+	return errors
+}
+
+// validateOptionalFields validates optional release fields
+func (r *Release) validateOptionalFields() []string {
+	var errors []string
+
 	if r.Notes != "" && len(r.Notes) > MaxNotesLength {
 		errors = append(errors, "release notes must be 10000 characters or less")
 	}
 
-	// Validate metadata keys and values
-	for key, value := range r.Metadata {
-		if key == "" {
-			errors = append(errors, "metadata keys cannot be empty")
-		}
-		if len(key) > MaxMetadataKeyLength {
-			errors = append(errors, "metadata keys must be 100 characters or less")
-		}
-		if len(value) > MaxMetadataValueLength {
-			errors = append(errors, "metadata values must be 500 characters or less")
-		}
-	}
+	errors = append(errors, validateKeyValueMap(r.Metadata, "metadata")...)
 
-	if len(errors) > 0 {
-		return fmt.Errorf("release validation errors:\n  - %s", strings.Join(errors, "\n  - "))
-	}
-
-	return nil
+	return errors
 }
 
 // isValidSemanticVersion checks if the version follows semantic versioning

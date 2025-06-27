@@ -3,7 +3,9 @@ package models
 import "testing"
 
 // testSlugValidation is a helper function for testing slug validation functions
-func testSlugValidation(t *testing.T, funcName string, validatorFunc func(string) bool, validExamples, invalidExamples []string) {
+func testSlugValidation(
+	t *testing.T, funcName string, validatorFunc func(string) bool, validExamples, invalidExamples []string,
+) {
 	t.Helper()
 
 	// Test valid examples
@@ -43,7 +45,9 @@ func testIsActiveValidation(t *testing.T, activeGetter, archivedGetter func() bo
 }
 
 // testStringValidation is a helper function for testing string validation functions
-func testStringValidation(t *testing.T, funcName string, validatorFunc func(string) bool, validStrings, invalidStrings []string) {
+func testStringValidation(
+	t *testing.T, funcName string, validatorFunc func(string) bool, validStrings, invalidStrings []string,
+) {
 	t.Helper()
 
 	testSlugValidation(t, funcName, validatorFunc, validStrings, invalidStrings)

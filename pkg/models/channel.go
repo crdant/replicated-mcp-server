@@ -32,31 +32,46 @@ type Channel struct {
 func (c *Channel) Validate() error {
 	var errors []string
 
-	// Validate ID
+	errors = append(errors, c.validateBasicFields()...)
+	errors = append(errors, c.validateTimestamps()...)
+	errors = append(errors, c.validateReleaseRelationship()...)
+	errors = append(errors, c.validateOptionalFields()...)
+
+	if len(errors) > 0 {
+		return fmt.Errorf("channel validation errors:\n  - %s", strings.Join(errors, "\n  - "))
+	}
+
+	return nil
+}
+
+// validateBasicFields validates basic channel fields
+func (c *Channel) validateBasicFields() []string {
+	var errors []string
+
 	if c.ID == "" {
 		errors = append(errors, "channel ID is required")
 	}
-
-	// Validate ApplicationID
 	if c.ApplicationID == "" {
 		errors = append(errors, "application ID is required")
 	}
-
-	// Validate Name
 	if c.Name == "" {
 		errors = append(errors, "channel name is required")
 	} else if len(c.Name) > MaxChannelNameLength {
 		errors = append(errors, "channel name must be 100 characters or less")
 	}
-
-	// Validate ChannelSlug
 	if c.ChannelSlug == "" {
 		errors = append(errors, "channel slug is required")
 	} else if !isValidChannelSlug(c.ChannelSlug) {
 		errors = append(errors, "channel slug must contain only lowercase letters, numbers, and hyphens")
 	}
 
-	// Validate timestamps
+	return errors
+}
+
+// validateTimestamps validates channel timestamp fields
+func (c *Channel) validateTimestamps() []string {
+	var errors []string
+
 	if c.CreatedAt.IsZero() {
 		errors = append(errors, "created_at timestamp is required")
 	}
@@ -66,24 +81,25 @@ func (c *Channel) Validate() error {
 	if !c.CreatedAt.IsZero() && !c.UpdatedAt.IsZero() && c.UpdatedAt.Before(c.CreatedAt) {
 		errors = append(errors, "updated_at must be equal to or after created_at")
 	}
-
-	// Validate ArchivedAt if provided
 	if c.ArchivedAt != nil {
 		if c.ArchivedAt.Before(c.CreatedAt) {
 			errors = append(errors, "archived_at must be equal to or after created_at")
 		}
-		// If archived_at is set, is_archived should be true
 		if !c.IsArchived {
 			errors = append(errors, "is_archived must be true when archived_at is set")
 		}
 	}
-
-	// Validate archived state consistency
 	if c.IsArchived && c.ArchivedAt == nil {
 		errors = append(errors, "archived_at is required when is_archived is true")
 	}
 
-	// Validate release relationship
+	return errors
+}
+
+// validateReleaseRelationship validates channel-release relationship
+func (c *Channel) validateReleaseRelationship() []string {
+	var errors []string
+
 	if c.ReleaseID != "" && c.ReleaseSequence <= 0 {
 		errors = append(errors, "release_sequence must be positive when release_id is provided")
 	}
@@ -91,16 +107,18 @@ func (c *Channel) Validate() error {
 		errors = append(errors, "release_id is required when release_sequence is provided")
 	}
 
-	// Validate optional fields
+	return errors
+}
+
+// validateOptionalFields validates optional channel fields
+func (c *Channel) validateOptionalFields() []string {
+	var errors []string
+
 	if c.Description != "" && len(c.Description) > MaxChannelDescriptionLength {
 		errors = append(errors, "channel description must be 500 characters or less")
 	}
 
-	if len(errors) > 0 {
-		return fmt.Errorf("channel validation errors:\n  - %s", strings.Join(errors, "\n  - "))
-	}
-
-	return nil
+	return errors
 }
 
 // isValidChannelSlug checks if a channel slug contains only valid characters

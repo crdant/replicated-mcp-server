@@ -224,8 +224,12 @@ func TestRelease_Validate(t *testing.T) {
 					strings.Repeat("k", 101): "value",
 				},
 			},
-			wantErr:     true,
-			errContains: []string{"metadata keys cannot be empty", "metadata values must be 500 characters or less", "metadata keys must be 100 characters or less"},
+			wantErr: true,
+			errContains: []string{
+				"metadata keys cannot be empty",
+				"metadata values must be 500 characters or less",
+				"metadata keys must be 100 characters or less",
+			},
 		},
 	}
 
@@ -307,7 +311,9 @@ func TestRelease_JSONMarshaling(t *testing.T) {
 }
 
 func TestIsValidSemanticVersion(t *testing.T) {
-	validVersions := []string{"1.0.0", "1.0.0-alpha", "1.0.0-alpha.1", "1.0.0+20130313144700", "1.0.0-beta.2+exp.sha.5114f85"}
+	validVersions := []string{
+		"1.0.0", "1.0.0-alpha", "1.0.0-alpha.1", "1.0.0+20130313144700", "1.0.0-beta.2+exp.sha.5114f85",
+	}
 	invalidVersions := []string{"1.0", "v1.0.0", "-1.0.0", "01.0.0", "1.a.0", ""}
 
 	testStringValidation(t, "isValidSemanticVersion", isValidSemanticVersion, validVersions, invalidVersions)

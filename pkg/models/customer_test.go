@@ -303,8 +303,12 @@ func TestCustomer_Validate(t *testing.T) {
 					strings.Repeat("k", 101): "value",
 				},
 			},
-			wantErr:     true,
-			errContains: []string{"entitlement keys cannot be empty", "entitlement values must be 500 characters or less", "entitlement keys must be 100 characters or less"},
+			wantErr: true,
+			errContains: []string{
+				"entitlement keys cannot be empty",
+				"entitlement values must be 500 characters or less",
+				"entitlement keys must be 100 characters or less",
+			},
 		},
 		{
 			name: "custom fields validation",
@@ -324,8 +328,12 @@ func TestCustomer_Validate(t *testing.T) {
 					strings.Repeat("f", 101): "value",
 				},
 			},
-			wantErr:     true,
-			errContains: []string{"custom field keys cannot be empty", "custom field values must be 500 characters or less", "custom field keys must be 100 characters or less"},
+			wantErr: true,
+			errContains: []string{
+				"custom field keys cannot be empty",
+				"custom field values must be 500 characters or less",
+				"custom field keys must be 100 characters or less",
+			},
 		},
 	}
 
@@ -406,10 +414,12 @@ func TestCustomer_JSONMarshaling(t *testing.T) {
 
 	// Verify entitlements and custom fields
 	if len(unmarshaledCustomer.Entitlements) != len(customer.Entitlements) {
-		t.Errorf("Entitlements length mismatch: got %v, want %v", len(unmarshaledCustomer.Entitlements), len(customer.Entitlements))
+		t.Errorf("Entitlements length mismatch: got %v, want %v",
+			len(unmarshaledCustomer.Entitlements), len(customer.Entitlements))
 	}
 	if len(unmarshaledCustomer.CustomFields) != len(customer.CustomFields) {
-		t.Errorf("CustomFields length mismatch: got %v, want %v", len(unmarshaledCustomer.CustomFields), len(customer.CustomFields))
+		t.Errorf("CustomFields length mismatch: got %v, want %v",
+			len(unmarshaledCustomer.CustomFields), len(customer.CustomFields))
 	}
 }
 
@@ -571,7 +581,8 @@ func TestCustomer_String(t *testing.T) {
 	}
 
 	str := customer.String()
-	expected := "Customer{ID: cust-123, ApplicationID: app-456, Name: Test Customer, Type: paid, LicenseType: paid, IsArchived: false}"
+	expected := "Customer{ID: cust-123, ApplicationID: app-456, Name: Test Customer, " +
+		"Type: paid, LicenseType: paid, IsArchived: false}"
 
 	if str != expected {
 		t.Errorf("Customer.String() = %v, want %v", str, expected)
