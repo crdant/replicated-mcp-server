@@ -107,4 +107,3 @@ func indexOfSubstring(s, substr string) int {
 	}
 	return -1
 }
-
