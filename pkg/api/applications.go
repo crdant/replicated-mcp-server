@@ -28,7 +28,7 @@ type ApplicationList struct {
 }
 
 // parseJSONResponse is a helper function that handles common HTTP response processing
-func (c *Client) parseJSONResponse(ctx context.Context, resp *http.Response, target interface{}, operation string) error {
+func (c *Client) parseJSONResponse(_ context.Context, resp *http.Response, target interface{}, operation string) error {
 	defer resp.Body.Close()
 
 	// Check for HTTP errors
@@ -82,11 +82,11 @@ func (c *Client) ListApplications(ctx context.Context, opts *ListOptions) (*Appl
 	}
 
 	// Validate applications
-	for i, app := range appList.Applications {
-		if err := app.Validate(); err != nil {
+	for i := range appList.Applications {
+		if err := appList.Applications[i].Validate(); err != nil {
 			c.logger.WarnContext(ctx, "Application validation failed",
 				"index", i,
-				"app_id", app.ID,
+				"app_id", appList.Applications[i].ID,
 				"error", err,
 			)
 		}
@@ -175,11 +175,11 @@ func (c *Client) SearchApplications(ctx context.Context, query string, opts *Lis
 	}
 
 	// Validate applications
-	for i, app := range appList.Applications {
-		if err := app.Validate(); err != nil {
+	for i := range appList.Applications {
+		if err := appList.Applications[i].Validate(); err != nil {
 			c.logger.WarnContext(ctx, "Application validation failed",
 				"index", i,
-				"app_id", app.ID,
+				"app_id", appList.Applications[i].ID,
 				"error", err,
 			)
 		}

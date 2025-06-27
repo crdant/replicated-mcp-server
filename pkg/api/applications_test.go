@@ -12,41 +12,18 @@ import (
 	"github.com/crdant/replicated-mcp-server/pkg/models"
 )
 
-// Mock data for testing
-var mockApplication = models.Application{
-	ID:          "app-12345",
-	Name:        "Test Application",
-	Slug:        "test-app",
-	TeamID:      "team-67890",
-	TeamName:    "Test Team",
-	CreatedAt:   time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC),
-	UpdatedAt:   time.Date(2024, 1, 2, 12, 0, 0, 0, time.UTC),
-	Description: "A test application for unit testing",
-	Icon:        "https://example.com/icon.png",
-	IsActive:    true,
-}
-
-var mockApplications = []models.Application{
-	mockApplication,
-	{
-		ID:          "app-54321",
-		Name:        "Another Test App",
-		Slug:        "another-test-app",
-		TeamID:      "team-67890",
-		TeamName:    "Test Team",
-		CreatedAt:   time.Date(2024, 1, 3, 12, 0, 0, 0, time.UTC),
-		UpdatedAt:   time.Date(2024, 1, 4, 12, 0, 0, 0, time.UTC),
-		Description: "Another test application",
-		Icon:        "",
-		IsActive:    false,
-	},
-}
+// Test constants
+const (
+	testToken           = "test-token"
+	testHTTPMethodGET   = "GET"
+	testPathApplications = "/v1/applications"
+)
 
 // Helper function to create a test client with mock server
 func setupTestClient(handler http.HandlerFunc) (*Client, *httptest.Server) {
 	server := httptest.NewServer(handler)
 	client, _ := NewClient(ClientConfig{
-		APIToken: "test-token",
+		APIToken: testToken,
 		BaseURL:  server.URL,
 		Timeout:  30 * time.Second,
 	})
@@ -125,16 +102,16 @@ func TestListApplications(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client, server := setupTestClient(func(w http.ResponseWriter, r *http.Request) {
 				// Verify method and path
-				if r.Method != "GET" {
+				if r.Method != testHTTPMethodGET {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
-				if r.URL.Path != "/v1/applications" {
-					t.Errorf("Expected path /v1/applications, got %s", r.URL.Path)
+				if r.URL.Path != testPathApplications {
+					t.Errorf("Expected path %s, got %s", testPathApplications, r.URL.Path)
 				}
 
 				// Verify authentication
-				if auth := r.Header.Get("Authorization"); auth != "test-token" {
-					t.Errorf("Expected Authorization header 'test-token', got '%s'", auth)
+				if auth := r.Header.Get("Authorization"); auth != testToken {
+					t.Errorf("Expected Authorization header '%s', got '%s'", testToken, auth)
 				}
 
 				// Check query parameters if opts provided
@@ -239,7 +216,7 @@ func TestGetApplication(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client, server := setupTestClient(func(w http.ResponseWriter, r *http.Request) {
 				// Verify method
-				if r.Method != "GET" {
+				if r.Method != testHTTPMethodGET {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
 
@@ -250,8 +227,8 @@ func TestGetApplication(t *testing.T) {
 				}
 
 				// Verify authentication
-				if auth := r.Header.Get("Authorization"); auth != "test-token" {
-					t.Errorf("Expected Authorization header 'test-token', got '%s'", auth)
+				if auth := r.Header.Get("Authorization"); auth != testToken {
+					t.Errorf("Expected Authorization header '%s', got '%s'", testToken, auth)
 				}
 
 				w.WriteHeader(tt.statusCode)
@@ -376,7 +353,7 @@ func TestSearchApplications(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client, server := setupTestClient(func(w http.ResponseWriter, r *http.Request) {
 				// Verify method and path
-				if r.Method != "GET" {
+				if r.Method != testHTTPMethodGET {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
 				if r.URL.Path != "/v1/applications/search" {
@@ -384,8 +361,8 @@ func TestSearchApplications(t *testing.T) {
 				}
 
 				// Verify authentication
-				if auth := r.Header.Get("Authorization"); auth != "test-token" {
-					t.Errorf("Expected Authorization header 'test-token', got '%s'", auth)
+				if auth := r.Header.Get("Authorization"); auth != testToken {
+					t.Errorf("Expected Authorization header '%s', got '%s'", testToken, auth)
 				}
 
 				// Check query parameters
