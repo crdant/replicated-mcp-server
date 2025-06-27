@@ -1,8 +1,6 @@
 package mcp
 
 import (
-	"context"
-
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -89,16 +87,7 @@ func (s *Server) defineListApplicationsTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("list_applications tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual application listing in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Applications listing " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleListApplications
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -115,16 +104,7 @@ func (s *Server) defineGetApplicationTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("get_application tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual application retrieval in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Application details " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleGetApplication
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -146,16 +126,7 @@ func (s *Server) defineSearchApplicationsTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("search_applications tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual application search in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Application search " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleSearchApplications
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -183,16 +154,7 @@ func (s *Server) defineListReleasesTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("list_releases tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual release listing in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Release listing " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleListReleases
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -213,16 +175,7 @@ func (s *Server) defineGetReleaseTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("get_release tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual release retrieval in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Release details " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleGetRelease
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -248,16 +201,7 @@ func (s *Server) defineSearchReleasesTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("search_releases tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual release search in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Release search " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleSearchReleases
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -285,16 +229,7 @@ func (s *Server) defineListChannelsTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("list_channels tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual channel listing in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Channel listing " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleListChannels
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -315,16 +250,7 @@ func (s *Server) defineGetChannelTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("get_channel tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual channel retrieval in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Channel details " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleGetChannel
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -350,16 +276,7 @@ func (s *Server) defineSearchChannelsTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("search_channels tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual channel search in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Channel search " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleSearchChannels
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -387,16 +304,7 @@ func (s *Server) defineListCustomersTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("list_customers tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual customer listing in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Customer listing " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleListCustomers
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -417,16 +325,7 @@ func (s *Server) defineGetCustomerTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("get_customer tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual customer retrieval in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Customer details " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleGetCustomer
 
 	return toolDefinition{definition: &tool, handler: handler}
 }
@@ -452,16 +351,7 @@ func (s *Server) defineSearchCustomersTool() toolDefinition {
 		),
 	)
 
-	handler := func(_ context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		s.logger.Info("search_customers tool called", "arguments", request.GetArguments())
-
-		// TODO: Implement actual customer search in Step 7
-		return &mcp.CallToolResult{
-			Content: []mcp.Content{
-				mcp.NewTextContent("Customer search " + step7ImplementationMsg),
-			},
-		}, nil
-	}
+	handler := s.handleSearchCustomers
 
 	return toolDefinition{definition: &tool, handler: handler}
 }

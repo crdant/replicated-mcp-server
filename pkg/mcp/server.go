@@ -8,6 +8,7 @@ import (
 
 	"github.com/mark3labs/mcp-go/server"
 
+	"github.com/crdant/replicated-mcp-server/pkg/api"
 	"github.com/crdant/replicated-mcp-server/pkg/config"
 	"github.com/crdant/replicated-mcp-server/pkg/logging"
 )
@@ -18,6 +19,7 @@ import (
 type Server struct {
 	logger    logging.Logger
 	config    *config.Config
+	apiClient *api.Client
 	mcpServer *server.MCPServer
 }
 
@@ -41,10 +43,29 @@ type Server struct {
 //	error: Error if server initialization fails
 func NewServer(cfg *config.Config, logger logging.Logger) (*Server, error) {
 	if cfg == nil {
+		return nil, fmt.Errorf("failed to create API client: API token is required")
+	}
+
+	// Create API client
+	apiClient, err := api.NewClient(cfg, logger)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create API client: %w", err)
+	}
+
+	return NewServerWithClient(cfg, logger, apiClient)
+}
+
+// NewServerWithClient creates a new MCP server instance with the provided API client.
+// This is primarily used for testing with mock API clients.
+func NewServerWithClient(cfg *config.Config, logger logging.Logger, apiClient *api.Client) (*Server, error) {
+	if cfg == nil {
 		return nil, fmt.Errorf("configuration is required")
 	}
 	if logger == nil {
 		return nil, fmt.Errorf("logger is required")
+	}
+	if apiClient == nil {
+		return nil, fmt.Errorf("API client is required")
 	}
 
 	logger.Info("Initializing MCP server", "version", "1.0.0")
@@ -60,6 +81,7 @@ func NewServer(cfg *config.Config, logger logging.Logger) (*Server, error) {
 	s := &Server{
 		logger:    logger,
 		config:    cfg,
+		apiClient: apiClient,
 		mcpServer: mcpServer,
 	}
 

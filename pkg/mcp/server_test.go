@@ -39,7 +39,7 @@ func TestNewServer(t *testing.T) {
 			config:      nil,
 			logger:      logging.NewLogger("info"),
 			expectError: true,
-			errorMsg:    "configuration is required",
+			errorMsg:    "failed to create API client: API token is required",
 		},
 		{
 			name: "nil logger",
@@ -51,6 +51,16 @@ func TestNewServer(t *testing.T) {
 			logger:      nil,
 			expectError: true,
 			errorMsg:    "logger is required",
+		},
+		{
+			name: "missing API token",
+			config: &config.Config{
+				LogLevel: "info",
+				Timeout:  30 * time.Second,
+			},
+			logger:      logging.NewLogger("info"),
+			expectError: true,
+			errorMsg:    "failed to create API client: API token is required",
 		},
 	}
 
