@@ -14,8 +14,8 @@ import (
 
 // Test constants
 const (
-	testToken           = "test-token"
-	testHTTPMethodGET   = "GET"
+	testToken            = "test-token"
+	testHTTPMethodGET    = "GET"
 	testPathApplications = "/v1/applications"
 )
 
