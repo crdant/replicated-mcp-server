@@ -240,4 +240,3 @@ func TestHandleSearchApplications(t *testing.T) {
 		t.Errorf("Expected app ID 'app1', got %s", apps[0].ID)
 	}
 }
-

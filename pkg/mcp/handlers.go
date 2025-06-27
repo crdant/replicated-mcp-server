@@ -86,7 +86,7 @@ func (s *Server) handleGetApplication(ctx context.Context, request mcp.CallToolR
 
 // handleSearchApplications handles the search_applications tool call
 func (s *Server) handleSearchApplications(
-	ctx context.Context, 
+	ctx context.Context,
 	request mcp.CallToolRequest,
 ) (*mcp.CallToolResult, error) {
 	s.logger.Info("search_applications tool called", "arguments", request.GetArguments())
@@ -532,4 +532,3 @@ func (s *Server) handleSearchCustomers(ctx context.Context, request mcp.CallTool
 		},
 	}, nil
 }
-
