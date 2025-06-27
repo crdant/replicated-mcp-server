@@ -31,12 +31,14 @@ type Server struct {
 // - Proper logging integration (stderr only)
 //
 // Args:
-//   cfg: Configuration containing API tokens, timeouts, and other settings
-//   logger: Logger instance for structured logging (output to stderr)
+//
+//	cfg: Configuration containing API tokens, timeouts, and other settings
+//	logger: Logger instance for structured logging (output to stderr)
 //
 // Returns:
-//   *Server: Configured MCP server instance
-//   error: Error if server initialization fails
+//
+//	*Server: Configured MCP server instance
+//	error: Error if server initialization fails
 func NewServer(cfg *config.Config, logger logging.Logger) (*Server, error) {
 	if cfg == nil {
 		return nil, fmt.Errorf("configuration is required")
@@ -79,11 +81,13 @@ func NewServer(cfg *config.Config, logger logging.Logger) (*Server, error) {
 // All MCP communication happens on stdout, while logging goes to stderr.
 //
 // Args:
-//   ctx: Context for graceful shutdown handling
+//
+//	ctx: Context for graceful shutdown handling
 //
 // Returns:
-//   error: Error if server startup or operation fails
-func (s *Server) Start(ctx context.Context) error {
+//
+//	error: Error if server startup or operation fails
+func (s *Server) Start(_ context.Context) error {
 	s.logger.Info("Starting MCP server on stdio transport")
 
 	// Start serving on stdio - this blocks until shutdown
@@ -99,15 +103,17 @@ func (s *Server) Start(ctx context.Context) error {
 // It ensures all ongoing operations complete and resources are cleaned up properly.
 //
 // Args:
-//   ctx: Context with timeout for graceful shutdown
+//
+//	ctx: Context with timeout for graceful shutdown
 //
 // Returns:
-//   error: Error if shutdown fails
-func (s *Server) Stop(ctx context.Context) error {
+//
+//	error: Error if shutdown fails
+func (s *Server) Stop(_ context.Context) error {
 	s.logger.Info("Stopping MCP server")
 
 	// Note: The mark3labs/mcp-go library doesn't expose a Stop method for stdio servers
-	// The server will stop when the stdio connection closes or context is cancelled
+	// The server will stop when the stdio connection closes or context is canceled
 	s.logger.Info("MCP server stopped")
 	return nil
 }
@@ -117,7 +123,8 @@ func (s *Server) Stop(ctx context.Context) error {
 // The actual business logic will be implemented in Step 7 (MCP Handlers).
 //
 // Returns:
-//   error: Error if tool registration fails
+//
+//	error: Error if tool registration fails
 func (s *Server) registerTools() error {
 	s.logger.Debug("Registering MCP tools")
 
@@ -135,7 +142,8 @@ func (s *Server) registerTools() error {
 // Resources provide access to Replicated entities through standardized URIs.
 //
 // Returns:
-//   error: Error if resource registration fails
+//
+//	error: Error if resource registration fails
 func (s *Server) registerResources() error {
 	s.logger.Debug("Registering MCP resources")
 

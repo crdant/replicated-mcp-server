@@ -9,6 +9,12 @@ import (
 	"github.com/crdant/replicated-mcp-server/pkg/logging"
 )
 
+// Test constants
+const (
+	listApplicationsToolName = "list_applications"
+	applicationResourceURI   = "replicated://applications/{application}"
+)
+
 func TestNewServer(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -209,7 +215,7 @@ func TestServerToolDefinitions(t *testing.T) {
 	// Test a specific tool definition (list_applications)
 	var listAppsTool *toolDefinition
 	for _, tool := range tools {
-		if tool.definition.Name == "list_applications" {
+		if tool.definition.Name == listApplicationsToolName {
 			listAppsTool = &tool
 			break
 		}
@@ -220,8 +226,8 @@ func TestServerToolDefinitions(t *testing.T) {
 	}
 
 	// Verify tool properties
-	if listAppsTool.definition.Name != "list_applications" {
-		t.Errorf("Expected tool name 'list_applications', got '%s'", listAppsTool.definition.Name)
+	if listAppsTool.definition.Name != listApplicationsToolName {
+		t.Errorf("Expected tool name '%s', got '%s'", listApplicationsToolName, listAppsTool.definition.Name)
 	}
 
 	if listAppsTool.definition.Description == "" {
@@ -251,7 +257,7 @@ func TestServerResourceDefinitions(t *testing.T) {
 	// Test a specific resource definition (application)
 	var appResource *resourceDefinition
 	for _, resource := range resources {
-		if resource.definition.URI == "replicated://applications/{application}" {
+		if resource.definition.URI == applicationResourceURI {
 			appResource = &resource
 			break
 		}
@@ -262,8 +268,8 @@ func TestServerResourceDefinitions(t *testing.T) {
 	}
 
 	// Verify resource properties
-	if appResource.definition.URI != "replicated://applications/{application}" {
-		t.Errorf("Expected resource URI 'replicated://applications/{application}', got '%s'", appResource.definition.URI)
+	if appResource.definition.URI != applicationResourceURI {
+		t.Errorf("Expected resource URI '%s', got '%s'", applicationResourceURI, appResource.definition.URI)
 	}
 
 	if appResource.definition.Name != "Application Data" {

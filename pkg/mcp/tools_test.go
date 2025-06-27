@@ -165,7 +165,7 @@ func TestToolHandlers(t *testing.T) {
 				return
 			}
 
-			expectedMessage := "will be implemented in Step 7 (MCP Handlers)"
+			expectedMessage := step7ImplementationMsg
 			if !contains(textContent.Text, expectedMessage) {
 				t.Errorf("Expected placeholder message containing '%s', got '%s'", expectedMessage, textContent.Text)
 			}
@@ -267,12 +267,12 @@ func createMockCallToolRequest(toolName string, args map[string]any) mcp.CallToo
 
 // Helper function to check if a string contains a substring
 func contains(s, substr string) bool {
-	return len(s) >= len(substr) && 
-		   (s == substr || 
-			len(s) > len(substr) && 
-			(s[:len(substr)] == substr || 
-			 s[len(s)-len(substr):] == substr ||
-			 indexOfSubstring(s, substr) >= 0))
+	return len(s) >= len(substr) &&
+		(s == substr ||
+			len(s) > len(substr) &&
+				(s[:len(substr)] == substr ||
+					s[len(s)-len(substr):] == substr ||
+					indexOfSubstring(s, substr) >= 0))
 }
 
 // Helper function to find substring index
