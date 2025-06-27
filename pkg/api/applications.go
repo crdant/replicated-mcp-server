@@ -36,7 +36,7 @@ type ApplicationList struct {
 // ListApplications retrieves all applications accessible to the authenticated team
 func (s *ApplicationService) ListApplications(ctx context.Context, opts *ListApplicationsOptions) (*ApplicationList, error) {
 	path := "/vendor/v3/apps"
-	
+
 	// Build query parameters
 	if opts != nil && opts.ExcludeChannels {
 		params := url.Values{}
@@ -67,7 +67,7 @@ func (s *ApplicationService) ListApplications(ctx context.Context, opts *ListApp
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
-	s.client.logger.DebugContext(ctx, "Successfully listed applications", 
+	s.client.logger.DebugContext(ctx, "Successfully listed applications",
 		"count", len(result.Applications))
 
 	return &result, nil
@@ -104,7 +104,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, id string) (*mo
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
-	s.client.logger.DebugContext(ctx, "Successfully retrieved application", 
+	s.client.logger.DebugContext(ctx, "Successfully retrieved application",
 		"app_id", result.ID,
 		"app_name", result.Name)
 
@@ -142,11 +142,10 @@ func (s *ApplicationService) SearchApplications(ctx context.Context, query strin
 		Applications: filteredApps,
 	}
 
-	s.client.logger.DebugContext(ctx, "Successfully searched applications", 
+	s.client.logger.DebugContext(ctx, "Successfully searched applications",
 		"query", query,
 		"total_apps", len(allApps.Applications),
 		"filtered_count", len(filteredApps))
 
 	return result, nil
 }
-

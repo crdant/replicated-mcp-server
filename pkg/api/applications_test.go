@@ -78,11 +78,11 @@ func TestApplicationService_ListApplications(t *testing.T) {
 			expectExcludeChannels: true,
 		},
 		{
-			name:         "empty list",
-			opts:         nil,
-			mockResponse: `{"applications": []}`,
-			mockStatus:   http.StatusOK,
-			expectError:  false,
+			name:          "empty list",
+			opts:          nil,
+			mockResponse:  `{"applications": []}`,
+			mockStatus:    http.StatusOK,
+			expectError:   false,
 			expectedCount: 0,
 		},
 		{
@@ -550,7 +550,7 @@ func TestApplicationService_SearchApplications(t *testing.T) {
 					nameMatch := strings.Contains(strings.ToLower(app.Name), queryLower)
 					slugMatch := strings.Contains(strings.ToLower(app.Slug), queryLower)
 					descMatch := strings.Contains(strings.ToLower(app.Description), queryLower)
-					
+
 					if !nameMatch && !slugMatch && !descMatch {
 						t.Errorf("Application %s does not match query %s", app.Name, tt.query)
 					}
