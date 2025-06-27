@@ -13,10 +13,6 @@ const (
 	minOffset      = 0
 )
 
-// Constants for MCP protocol messages
-const (
-	step7ImplementationMsg = "will be implemented in Step 7 (MCP Handlers)"
-)
 
 // toolDefinition represents a complete tool definition with its handler function.
 type toolDefinition struct {
