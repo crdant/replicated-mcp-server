@@ -173,10 +173,10 @@ func TestServerResourceRegistration(t *testing.T) {
 
 	// Verify all expected resources are present
 	expectedResourceURIs := []string{
-		"replicated://applications/{app_id}",
-		"replicated://applications/{app_id}/releases/{release_id}",
-		"replicated://applications/{app_id}/channels/{channel_id}",
-		"replicated://applications/{app_id}/customers/{customer_id}",
+		"replicated://applications/{application}",
+		"replicated://applications/{application}/releases/{release}",
+		"replicated://applications/{application}/channels/{channel}",
+		"replicated://applications/{application}/customers/{customer}",
 	}
 
 	foundResources := make(map[string]bool)
@@ -251,7 +251,7 @@ func TestServerResourceDefinitions(t *testing.T) {
 	// Test a specific resource definition (application)
 	var appResource *resourceDefinition
 	for _, resource := range resources {
-		if resource.definition.URI == "replicated://applications/{app_id}" {
+		if resource.definition.URI == "replicated://applications/{application}" {
 			appResource = &resource
 			break
 		}
@@ -262,8 +262,8 @@ func TestServerResourceDefinitions(t *testing.T) {
 	}
 
 	// Verify resource properties
-	if appResource.definition.URI != "replicated://applications/{app_id}" {
-		t.Errorf("Expected resource URI 'replicated://applications/{app_id}', got '%s'", appResource.definition.URI)
+	if appResource.definition.URI != "replicated://applications/{application}" {
+		t.Errorf("Expected resource URI 'replicated://applications/{application}', got '%s'", appResource.definition.URI)
 	}
 
 	if appResource.definition.Name != "Application Data" {

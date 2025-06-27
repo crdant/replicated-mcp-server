@@ -22,6 +22,9 @@ type toolDefinition struct {
 // - Channel tools: list, get, search channels
 // - Customer tools: list, get, search customers
 //
+// Note: ID parameters in tools accept both IDs and slugs (e.g., app_id accepts both 
+// application IDs and application slugs). Handlers determine the parameter type at runtime.
+//
 // Each tool includes:
 // - Proper JSON schema validation for arguments
 // - Comprehensive documentation

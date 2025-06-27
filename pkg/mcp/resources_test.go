@@ -31,19 +31,19 @@ func TestResourceHandlers(t *testing.T) {
 		testURI     string
 	}{
 		{
-			resourceURI: "replicated://applications/{app_id}",
+			resourceURI: "replicated://applications/{application}",
 			testURI:     "replicated://applications/test-app-123",
 		},
 		{
-			resourceURI: "replicated://applications/{app_id}/releases/{release_id}",
+			resourceURI: "replicated://applications/{application}/releases/{release}",
 			testURI:     "replicated://applications/test-app-123/releases/test-release-456",
 		},
 		{
-			resourceURI: "replicated://applications/{app_id}/channels/{channel_id}",
+			resourceURI: "replicated://applications/{application}/channels/{channel}",
 			testURI:     "replicated://applications/test-app-123/channels/test-channel-789",
 		},
 		{
-			resourceURI: "replicated://applications/{app_id}/customers/{customer_id}",
+			resourceURI: "replicated://applications/{application}/customers/{customer}",
 			testURI:     "replicated://applications/test-app-123/customers/test-customer-101",
 		},
 	}
@@ -108,25 +108,25 @@ func TestResourceDefinitions(t *testing.T) {
 		mimeType    string
 	}{
 		{
-			uri:         "replicated://applications/{app_id}",
+			uri:         "replicated://applications/{application}",
 			name:        "Application Data",
 			description: "Access to detailed application information",
 			mimeType:    "application/json",
 		},
 		{
-			uri:         "replicated://applications/{app_id}/releases/{release_id}",
+			uri:         "replicated://applications/{application}/releases/{release}",
 			name:        "Release Data",
 			description: "Access to detailed release information",
 			mimeType:    "application/json",
 		},
 		{
-			uri:         "replicated://applications/{app_id}/channels/{channel_id}",
+			uri:         "replicated://applications/{application}/channels/{channel}",
 			name:        "Channel Data",
 			description: "Access to detailed channel information",
 			mimeType:    "application/json",
 		},
 		{
-			uri:         "replicated://applications/{app_id}/customers/{customer_id}",
+			uri:         "replicated://applications/{application}/customers/{customer}",
 			name:        "Customer Data",
 			description: "Access to detailed customer information",
 			mimeType:    "application/json",
@@ -193,20 +193,20 @@ func TestResourceURIPatterns(t *testing.T) {
 		description string
 	}{
 		{
-			pattern:     "replicated://applications/{app_id}",
-			description: "Application resources should follow replicated://applications/{app_id} pattern",
+			pattern:     "replicated://applications/{application}",
+			description: "Application resources should follow replicated://applications/{application} pattern",
 		},
 		{
-			pattern:     "replicated://applications/{app_id}/releases/{release_id}",
-			description: "Release resources should follow replicated://applications/{app_id}/releases/{release_id} pattern",
+			pattern:     "replicated://applications/{application}/releases/{release}",
+			description: "Release resources should follow replicated://applications/{application}/releases/{release} pattern",
 		},
 		{
-			pattern:     "replicated://applications/{app_id}/channels/{channel_id}",
-			description: "Channel resources should follow replicated://applications/{app_id}/channels/{channel_id} pattern",
+			pattern:     "replicated://applications/{application}/channels/{channel}",
+			description: "Channel resources should follow replicated://applications/{application}/channels/{channel} pattern",
 		},
 		{
-			pattern:     "replicated://applications/{app_id}/customers/{customer_id}",
-			description: "Customer resources should follow replicated://applications/{app_id}/customers/{customer_id} pattern",
+			pattern:     "replicated://applications/{application}/customers/{customer}",
+			description: "Customer resources should follow replicated://applications/{application}/customers/{customer} pattern",
 		},
 	}
 

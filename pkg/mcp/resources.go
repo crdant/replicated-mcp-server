@@ -17,10 +17,13 @@ type resourceDefinition struct {
 // Resources provide standardized access to Replicated data through URI-based addressing.
 //
 // Resource URI patterns:
-// - Applications: replicated://applications/{app_id}
-// - Releases: replicated://applications/{app_id}/releases/{release_id}
-// - Channels: replicated://applications/{app_id}/channels/{channel_id}
-// - Customers: replicated://applications/{app_id}/customers/{customer_id}
+// - Applications: replicated://applications/{application}
+// - Releases: replicated://applications/{application}/releases/{release}
+// - Channels: replicated://applications/{application}/channels/{channel}
+// - Customers: replicated://applications/{application}/customers/{customer}
+//
+// Note: Parameters accept both IDs and slugs (e.g., application accepts both 
+// application IDs and application slugs). Handlers determine the parameter type at runtime.
 //
 // Each resource includes:
 // - Standardized URI scheme for consistent addressing
@@ -40,10 +43,11 @@ func (s *Server) defineResources() []resourceDefinition {
 }
 
 // defineApplicationResource creates the application resource definition.
-// Provides access to application data through the replicated://applications/{app_id} URI pattern.
+// Provides access to application data through the replicated://applications/{application} URI pattern.
+// The application parameter accepts both application IDs and application slugs.
 func (s *Server) defineApplicationResource() resourceDefinition {
 	resource := mcp.NewResource(
-		"replicated://applications/{app_id}",
+		"replicated://applications/{application}",
 		"Application Data",
 		mcp.WithResourceDescription("Access to detailed application information including configuration, status, and metadata from the Replicated Vendor Portal"),
 		mcp.WithMIMEType("application/json"),
@@ -62,10 +66,11 @@ func (s *Server) defineApplicationResource() resourceDefinition {
 }
 
 // defineReleaseResource creates the release resource definition.
-// Provides access to release data through the replicated://applications/{app_id}/releases/{release_id} URI pattern.
+// Provides access to release data through the replicated://applications/{application}/releases/{release} URI pattern.
+// Both application and release parameters accept IDs and slugs.
 func (s *Server) defineReleaseResource() resourceDefinition {
 	resource := mcp.NewResource(
-		"replicated://applications/{app_id}/releases/{release_id}",
+		"replicated://applications/{application}/releases/{release}",
 		"Release Data",
 		mcp.WithResourceDescription("Access to detailed release information including version, manifests, deployment configuration, and changelog from the Replicated Vendor Portal"),
 		mcp.WithMIMEType("application/json"),
@@ -83,10 +88,11 @@ func (s *Server) defineReleaseResource() resourceDefinition {
 }
 
 // defineChannelResource creates the channel resource definition.
-// Provides access to channel data through the replicated://applications/{app_id}/channels/{channel_id} URI pattern.
+// Provides access to channel data through the replicated://applications/{application}/channels/{channel} URI pattern.
+// Both application and channel parameters accept IDs and slugs.
 func (s *Server) defineChannelResource() resourceDefinition {
 	resource := mcp.NewResource(
-		"replicated://applications/{app_id}/channels/{channel_id}",
+		"replicated://applications/{application}/channels/{channel}",
 		"Channel Data",
 		mcp.WithResourceDescription("Access to detailed channel information including release assignments, customer adoption, and deployment policies from the Replicated Vendor Portal"),
 		mcp.WithMIMEType("application/json"),
@@ -105,10 +111,11 @@ func (s *Server) defineChannelResource() resourceDefinition {
 }
 
 // defineCustomerResource creates the customer resource definition.
-// Provides access to customer data through the replicated://applications/{app_id}/customers/{customer_id} URI pattern.
+// Provides access to customer data through the replicated://applications/{application}/customers/{customer} URI pattern.
+// Both application and customer parameters accept IDs and slugs.
 func (s *Server) defineCustomerResource() resourceDefinition {
 	resource := mcp.NewResource(
-		"replicated://applications/{app_id}/customers/{customer_id}",
+		"replicated://applications/{application}/customers/{customer}",
 		"Customer Data",
 		mcp.WithResourceDescription("Access to detailed customer information including license details, deployment status, and usage analytics from the Replicated Vendor Portal"),
 		mcp.WithMIMEType("application/json"),
