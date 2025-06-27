@@ -200,7 +200,9 @@ func (c *Client) GetRelease(ctx context.Context, appIdentifier, releaseIdentifie
 }
 
 // SearchReleases searches for releases by version
-func (c *Client) SearchReleases(ctx context.Context, appIdentifier, query string, limit, offset int) ([]Release, error) {
+func (c *Client) SearchReleases(
+	ctx context.Context, appIdentifier, query string, limit, offset int,
+) ([]Release, error) {
 	params := url.Values{}
 	params.Set("q", query)
 	if limit > 0 {
@@ -270,7 +272,9 @@ func (c *Client) GetChannel(ctx context.Context, appIdentifier, channelIdentifie
 }
 
 // SearchChannels searches for channels by name
-func (c *Client) SearchChannels(ctx context.Context, appIdentifier, query string, limit, offset int) ([]Channel, error) {
+func (c *Client) SearchChannels(
+	ctx context.Context, appIdentifier, query string, limit, offset int,
+) ([]Channel, error) {
 	params := url.Values{}
 	params.Set("q", query)
 	if limit > 0 {
@@ -340,7 +344,9 @@ func (c *Client) GetCustomer(ctx context.Context, appIdentifier, customerIdentif
 }
 
 // SearchCustomers searches for customers by name or email
-func (c *Client) SearchCustomers(ctx context.Context, appIdentifier, query string, limit, offset int) ([]Customer, error) {
+func (c *Client) SearchCustomers(
+	ctx context.Context, appIdentifier, query string, limit, offset int,
+) ([]Customer, error) {
 	params := url.Values{}
 	params.Set("q", query)
 	if limit > 0 {
