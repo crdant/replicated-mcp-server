@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+// Validation constants
+const (
+	MaxNameLength        = 255
+	MaxDescriptionLength = 1000
+)
+
 // Application represents a Replicated application in the Vendor Portal
 type Application struct {
 	ID          string    `json:"id"`
@@ -35,7 +41,7 @@ func (a *Application) Validate() error {
 	// Validate Name
 	if a.Name == "" {
 		errors = append(errors, "application name is required")
-	} else if len(a.Name) > 255 {
+	} else if len(a.Name) > MaxNameLength {
 		errors = append(errors, "application name must be 255 characters or less")
 	}
 
@@ -63,7 +69,7 @@ func (a *Application) Validate() error {
 	}
 
 	// Validate optional fields
-	if a.Description != "" && len(a.Description) > 1000 {
+	if a.Description != "" && len(a.Description) > MaxDescriptionLength {
 		errors = append(errors, "application description must be 1000 characters or less")
 	}
 
@@ -76,12 +82,12 @@ func (a *Application) Validate() error {
 
 // isValidSlug checks if a slug contains only valid characters
 func isValidSlug(slug string) bool {
-	if len(slug) == 0 {
+	if slug == "" {
 		return false
 	}
 
 	for _, r := range slug {
-		if !((r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-') {
+		if (r < 'a' || r > 'z') && (r < '0' || r > '9') && r != '-' {
 			return false
 		}
 	}

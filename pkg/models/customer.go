@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+// Customer validation constants
+const (
+	MaxCustomerNameLength = 255
+	MaxKeyLength         = 100
+	MaxValueLength       = 500
+	EmailParts           = 2
+)
+
 // Customer represents a Replicated customer with license and installation details
 type Customer struct {
 	ID                string            `json:"id"`
@@ -76,7 +84,7 @@ func (c *Customer) Validate() error {
 	// Validate Name
 	if c.Name == "" {
 		errors = append(errors, "customer name is required")
-	} else if len(c.Name) > 255 {
+	} else if len(c.Name) > MaxCustomerNameLength {
 		errors = append(errors, "customer name must be 255 characters or less")
 	}
 
@@ -148,10 +156,10 @@ func (c *Customer) Validate() error {
 		if key == "" {
 			errors = append(errors, "entitlement keys cannot be empty")
 		}
-		if len(key) > 100 {
+		if len(key) > MaxKeyLength {
 			errors = append(errors, "entitlement keys must be 100 characters or less")
 		}
-		if len(value) > 500 {
+		if len(value) > MaxValueLength {
 			errors = append(errors, "entitlement values must be 500 characters or less")
 		}
 	}
@@ -161,10 +169,10 @@ func (c *Customer) Validate() error {
 		if key == "" {
 			errors = append(errors, "custom field keys cannot be empty")
 		}
-		if len(key) > 100 {
+		if len(key) > MaxKeyLength {
 			errors = append(errors, "custom field keys must be 100 characters or less")
 		}
-		if len(value) > 500 {
+		if len(value) > MaxValueLength {
 			errors = append(errors, "custom field values must be 500 characters or less")
 		}
 	}
@@ -200,10 +208,10 @@ func isValidLicenseType(licenseType string) bool {
 func isValidEmail(email string) bool {
 	// Basic email validation - contains @ and has characters before and after
 	parts := strings.Split(email, "@")
-	if len(parts) != 2 {
+	if len(parts) != EmailParts {
 		return false
 	}
-	if len(parts[0]) == 0 || len(parts[1]) == 0 {
+	if parts[0] == "" || parts[1] == "" {
 		return false
 	}
 	// Domain part should contain at least one dot

@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+// Release validation constants
+const (
+	MaxNotesLength        = 10000
+	MaxMetadataKeyLength  = 100
+	MaxMetadataValueLength = 500
+)
+
 // Release represents a Replicated application release
 type Release struct {
 	ID            string            `json:"id"`
@@ -100,7 +107,7 @@ func (r *Release) Validate() error {
 	}
 
 	// Validate optional fields
-	if r.Notes != "" && len(r.Notes) > 10000 {
+	if r.Notes != "" && len(r.Notes) > MaxNotesLength {
 		errors = append(errors, "release notes must be 10000 characters or less")
 	}
 
@@ -109,10 +116,10 @@ func (r *Release) Validate() error {
 		if key == "" {
 			errors = append(errors, "metadata keys cannot be empty")
 		}
-		if len(key) > 100 {
+		if len(key) > MaxMetadataKeyLength {
 			errors = append(errors, "metadata keys must be 100 characters or less")
 		}
-		if len(value) > 500 {
+		if len(value) > MaxMetadataValueLength {
 			errors = append(errors, "metadata values must be 500 characters or less")
 		}
 	}

@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+// Channel validation constants
+const (
+	MaxChannelNameLength        = 100
+	MaxChannelDescriptionLength = 500
+)
+
 // Channel represents a Replicated release channel
 type Channel struct {
 	ID              string     `json:"id"`
@@ -39,7 +45,7 @@ func (c *Channel) Validate() error {
 	// Validate Name
 	if c.Name == "" {
 		errors = append(errors, "channel name is required")
-	} else if len(c.Name) > 100 {
+	} else if len(c.Name) > MaxChannelNameLength {
 		errors = append(errors, "channel name must be 100 characters or less")
 	}
 
@@ -86,7 +92,7 @@ func (c *Channel) Validate() error {
 	}
 
 	// Validate optional fields
-	if c.Description != "" && len(c.Description) > 500 {
+	if c.Description != "" && len(c.Description) > MaxChannelDescriptionLength {
 		errors = append(errors, "channel description must be 500 characters or less")
 	}
 
@@ -99,12 +105,12 @@ func (c *Channel) Validate() error {
 
 // isValidChannelSlug checks if a channel slug contains only valid characters
 func isValidChannelSlug(slug string) bool {
-	if len(slug) == 0 {
+	if slug == "" {
 		return false
 	}
 
 	for _, r := range slug {
-		if !((r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-') {
+		if (r < 'a' || r > 'z') && (r < '0' || r > '9') && r != '-' {
 			return false
 		}
 	}
