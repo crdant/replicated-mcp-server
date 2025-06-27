@@ -226,4 +226,3 @@ func TestListCustomers(t *testing.T) {
 		t.Errorf("Expected customer ID 'cust1', got %s", customers[0].ID)
 	}
 }
-

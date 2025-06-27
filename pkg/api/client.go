@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	defaultBaseURL    = "https://api.replicated.com"
-	userAgent         = "replicated-mcp-server"
+	defaultBaseURL     = "https://api.replicated.com"
+	userAgent          = "replicated-mcp-server"
 	httpErrorThreshold = 400
 )
 
@@ -362,5 +362,3 @@ func (c *Client) SearchCustomers(ctx context.Context, appIdentifier, query strin
 
 	return response.Customers, nil
 }
-
-
