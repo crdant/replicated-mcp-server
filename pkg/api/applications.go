@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"strings"
 
 	"github.com/crdant/replicated-mcp-server/pkg/models"
 )
@@ -108,5 +109,44 @@ func (s *ApplicationService) GetApplication(ctx context.Context, id string) (*mo
 		"app_name", result.Name)
 
 	return &result, nil
+}
+
+// SearchApplications searches for applications using client-side filtering of the list endpoint
+func (s *ApplicationService) SearchApplications(ctx context.Context, query string, opts *ListApplicationsOptions) (*ApplicationList, error) {
+	if strings.TrimSpace(query) == "" {
+		return nil, fmt.Errorf("search query is required")
+	}
+
+	s.client.logger.DebugContext(ctx, "Searching applications", "query", query)
+
+	// Use the list endpoint to get all applications
+	allApps, err := s.ListApplications(ctx, opts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list applications for search: %w", err)
+	}
+
+	// Filter applications client-side based on query
+	var filteredApps []models.Application
+	queryLower := strings.ToLower(strings.TrimSpace(query))
+
+	for _, app := range allApps.Applications {
+		// Search in name, slug, and description (case-insensitive)
+		if strings.Contains(strings.ToLower(app.Name), queryLower) ||
+			strings.Contains(strings.ToLower(app.Slug), queryLower) ||
+			strings.Contains(strings.ToLower(app.Description), queryLower) {
+			filteredApps = append(filteredApps, app)
+		}
+	}
+
+	result := &ApplicationList{
+		Applications: filteredApps,
+	}
+
+	s.client.logger.DebugContext(ctx, "Successfully searched applications", 
+		"query", query,
+		"total_apps", len(allApps.Applications),
+		"filtered_count", len(filteredApps))
+
+	return result, nil
 }
 
