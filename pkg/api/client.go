@@ -50,6 +50,7 @@ func NewClient(cfg *config.Config, logger logging.Logger) (*Client, error) {
 }
 
 // doRequest performs an HTTP request and handles common response processing
+//nolint:unparam // method parameter designed for extensibility, currently only GET is used
 func (c *Client) doRequest(ctx context.Context, method, path string, params url.Values) ([]byte, error) {
 	u := fmt.Sprintf("%s%s", c.baseURL, path)
 	if len(params) > 0 {

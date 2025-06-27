@@ -13,7 +13,6 @@ const (
 	minOffset      = 0
 )
 
-
 // toolDefinition represents a complete tool definition with its handler function.
 type toolDefinition struct {
 	definition *mcp.Tool
