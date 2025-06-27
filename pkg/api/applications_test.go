@@ -42,7 +42,6 @@ var mockApplications = []models.Application{
 	},
 }
 
-
 // Helper function to create a test client with mock server
 func setupTestClient(handler http.HandlerFunc) (*Client, *httptest.Server) {
 	server := httptest.NewServer(handler)

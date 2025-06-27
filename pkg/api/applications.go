@@ -149,7 +149,7 @@ func (c *Client) SearchApplications(ctx context.Context, query string, opts *Lis
 	// Build query parameters
 	params := url.Values{}
 	params.Set("q", query)
-	
+
 	if opts != nil {
 		if opts.Page > 0 {
 			params.Set("page", strconv.Itoa(opts.Page))
