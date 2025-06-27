@@ -355,10 +355,10 @@ func TestConfig_String(t *testing.T) {
 // Helper functions for testing
 
 func clearTestEnv() {
-	os.Unsetenv("REPLICATED_API_TOKEN")
-	os.Unsetenv("LOG_LEVEL")
-	os.Unsetenv("TIMEOUT")
-	os.Unsetenv("ENDPOINT")
+	_ = os.Unsetenv("REPLICATED_API_TOKEN")
+	_ = os.Unsetenv("LOG_LEVEL")
+	_ = os.Unsetenv("TIMEOUT")
+	_ = os.Unsetenv("ENDPOINT")
 }
 
 func createTestCommand() *cobra.Command {
