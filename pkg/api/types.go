@@ -23,14 +23,14 @@ func (c ClientConfig) Validate() error {
 	return nil
 }
 
-// APIError represents an error response from the API
-type APIError struct {
+// Error represents an error response from the API
+type Error struct {
 	StatusCode int    `json:"status_code"`
 	Message    string `json:"message"`
 	Details    string `json:"details,omitempty"`
 }
 
-func (e APIError) Error() string {
+func (e Error) Error() string {
 	if e.Details != "" {
 		return fmt.Sprintf("API error (status %d): %s - %s", e.StatusCode, e.Message, e.Details)
 	}

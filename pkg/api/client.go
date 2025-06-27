@@ -19,21 +19,21 @@ const (
 	HTTPErrorThreshold = 400
 )
 
-// APIClient provides HTTP client functionality for the Replicated API
-type APIClient struct {
+// Client provides HTTP client functionality for the Replicated API
+type Client struct {
 	config     ClientConfig
 	httpClient *http.Client
 	logger     *slog.Logger
 }
 
 // NewClient creates a new API client with the given configuration
-func NewClient(config ClientConfig) (*APIClient, error) {
+func NewClient(config ClientConfig) (*Client, error) {
 	// Use a no-op logger by default
 	return NewClientWithLogger(config, slog.New(slog.NewTextHandler(io.Discard, nil)))
 }
 
 // NewClientWithLogger creates a new API client with the given configuration and logger
-func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*APIClient, error) {
+func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*Client, error) {
 	if err := config.Validate(); err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*APIClient, 
 		config.Timeout = DefaultTimeout
 	}
 
-	client := &APIClient{
+	client := &Client{
 		config: config,
 		httpClient: &http.Client{
 			Timeout: config.Timeout,
@@ -55,7 +55,7 @@ func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*APIClient, 
 }
 
 // GetAuthHeaders returns the authentication headers for API requests
-func (c *APIClient) GetAuthHeaders() http.Header {
+func (c *Client) GetAuthHeaders() http.Header {
 	headers := make(http.Header)
 	headers.Set("Authorization", "Bearer "+c.config.APIToken)
 	headers.Set("User-Agent", DefaultUserAgent)
@@ -63,7 +63,7 @@ func (c *APIClient) GetAuthHeaders() http.Header {
 }
 
 // makeRequest creates and executes an HTTP request with proper authentication
-func (c *APIClient) makeRequest(
+func (c *Client) makeRequest(
 	ctx context.Context, method, path, contentType string, body io.Reader,
 ) (*http.Response, error) {
 	// Build full URL
@@ -130,32 +130,32 @@ func (c *APIClient) makeRequest(
 }
 
 // Get performs a GET request to the specified path
-func (c *APIClient) Get(ctx context.Context, path string) (*http.Response, error) {
+func (c *Client) Get(ctx context.Context, path string) (*http.Response, error) {
 	return c.makeRequest(ctx, "GET", path, "", nil)
 }
 
 // Post performs a POST request to the specified path
-func (c *APIClient) Post(ctx context.Context, path, contentType string, body io.Reader) (*http.Response, error) {
+func (c *Client) Post(ctx context.Context, path, contentType string, body io.Reader) (*http.Response, error) {
 	return c.makeRequest(ctx, "POST", path, contentType, body)
 }
 
 // Put performs a PUT request to the specified path
-func (c *APIClient) Put(ctx context.Context, path, contentType string, body io.Reader) (*http.Response, error) {
+func (c *Client) Put(ctx context.Context, path, contentType string, body io.Reader) (*http.Response, error) {
 	return c.makeRequest(ctx, "PUT", path, contentType, body)
 }
 
 // Delete performs a DELETE request to the specified path
-func (c *APIClient) Delete(ctx context.Context, path string) (*http.Response, error) {
+func (c *Client) Delete(ctx context.Context, path string) (*http.Response, error) {
 	return c.makeRequest(ctx, "DELETE", path, "", nil)
 }
 
-// ConvertHTTPError converts an HTTP error response to an APIError
-func (c *APIClient) ConvertHTTPError(resp *http.Response) *APIError {
+// ConvertHTTPError converts an HTTP error response to an Error
+func (c *Client) ConvertHTTPError(resp *http.Response) *Error {
 	if resp.StatusCode < HTTPErrorThreshold {
 		return nil
 	}
 
-	apiError := &APIError{
+	apiError := &Error{
 		StatusCode: resp.StatusCode,
 		Message:    http.StatusText(resp.StatusCode),
 	}

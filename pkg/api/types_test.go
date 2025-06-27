@@ -55,15 +55,15 @@ func TestClientConfig_Validate(t *testing.T) {
 	}
 }
 
-func TestAPIError_Error(t *testing.T) {
+func TestError_Error(t *testing.T) {
 	tests := []struct {
 		name     string
-		apiError APIError
+		apiError Error
 		expected string
 	}{
 		{
 			name: "error with details",
-			apiError: APIError{
+			apiError: Error{
 				StatusCode: 400,
 				Message:    "Bad Request",
 				Details:    "Invalid parameters provided",
@@ -72,7 +72,7 @@ func TestAPIError_Error(t *testing.T) {
 		},
 		{
 			name: "error without details",
-			apiError: APIError{
+			apiError: Error{
 				StatusCode: 404,
 				Message:    "Not Found",
 			},
@@ -80,7 +80,7 @@ func TestAPIError_Error(t *testing.T) {
 		},
 		{
 			name: "error with empty details",
-			apiError: APIError{
+			apiError: Error{
 				StatusCode: 500,
 				Message:    "Internal Server Error",
 				Details:    "",

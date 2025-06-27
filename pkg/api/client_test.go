@@ -87,7 +87,7 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestAPIClient_Authentication(t *testing.T) {
+func TestClient_Authentication(t *testing.T) {
 	tests := []struct {
 		name      string
 		apiToken  string
@@ -134,7 +134,7 @@ func TestAPIClient_Authentication(t *testing.T) {
 	}
 }
 
-func TestAPIClient_HTTPMethods(t *testing.T) {
+func TestClient_HTTPMethods(t *testing.T) {
 	// Create a test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify authentication headers
@@ -222,7 +222,7 @@ func TestAPIClient_HTTPMethods(t *testing.T) {
 	})
 }
 
-func TestAPIClient_ErrorHandling(t *testing.T) {
+func TestClient_ErrorHandling(t *testing.T) {
 	// Create a test server that returns various error responses
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -307,18 +307,18 @@ func TestAPIClient_ErrorHandling(t *testing.T) {
 			if resp.StatusCode >= 400 {
 				apiErr := client.ConvertHTTPError(resp)
 				if apiErr == nil {
-					t.Error("Expected ConvertHTTPError to return an APIError")
+					t.Error("Expected ConvertHTTPError to return an Error")
 					return
 				}
 				if apiErr.StatusCode != tt.expectedStatus {
-					t.Errorf("Expected APIError status %d, got %d", tt.expectedStatus, apiErr.StatusCode)
+					t.Errorf("Expected Error status %d, got %d", tt.expectedStatus, apiErr.StatusCode)
 				}
 			}
 		})
 	}
 }
 
-func TestAPIClient_ContextCancellation(t *testing.T) {
+func TestClient_ContextCancellation(t *testing.T) {
 	// Create a test server with a slow response
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		time.Sleep(100 * time.Millisecond)
@@ -348,7 +348,7 @@ func TestAPIClient_ContextCancellation(t *testing.T) {
 	}
 }
 
-func TestAPIClient_Logging(t *testing.T) {
+func TestClient_Logging(t *testing.T) {
 	// Create a test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
