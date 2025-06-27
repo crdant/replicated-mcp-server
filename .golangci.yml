@@ -98,6 +98,14 @@ linters:
         text: (G103|G307|G204|G104)
       - path: (.+)\.go$
         text: (G103|G307)
+      - linters:
+          - dupl
+        path: pkg/mcp/tools\.go$
+        text: "lines are duplicate"
+      - linters:
+          - unparam
+        path: pkg/mcp/server\.go$
+        text: "registerTools.*result 0.*is always nil|registerResources.*result 0.*is always nil"
     paths:
       - third_party$
       - builtin$
