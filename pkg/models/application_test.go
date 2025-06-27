@@ -281,31 +281,10 @@ func TestApplication_JSONMarshaling(t *testing.T) {
 }
 
 func TestIsValidSlug(t *testing.T) {
-	tests := []struct {
-		name string
-		slug string
-		want bool
-	}{
-		{"valid simple slug", "test", true},
-		{"valid slug with numbers", "test123", true},
-		{"valid slug with hyphens", "test-app-123", true},
-		{"empty slug", "", false},
-		{"slug with uppercase", "Test", false},
-		{"slug with underscore", "test_app", false},
-		{"slug with spaces", "test app", false},
-		{"slug starting with hyphen", "-test", false},
-		{"slug ending with hyphen", "test-", false},
-		{"slug with special characters", "test@app", false},
-		{"valid complex slug", "my-app-v2", true},
-	}
+	validSlugs := []string{"test", "test123", "test-app-123", "my-app-v2"}
+	invalidSlugs := []string{"", "Test", "test_app", "test app", "-test", "test-", "test@app"}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := isValidSlug(tt.slug); got != tt.want {
-				t.Errorf("isValidSlug(%v) = %v, want %v", tt.slug, got, tt.want)
-			}
-		})
-	}
+	testSlugValidation(t, "isValidSlug", isValidSlug, validSlugs, invalidSlugs)
 }
 
 func TestApplication_String(t *testing.T) {

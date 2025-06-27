@@ -307,54 +307,17 @@ func TestRelease_JSONMarshaling(t *testing.T) {
 }
 
 func TestIsValidSemanticVersion(t *testing.T) {
-	tests := []struct {
-		name    string
-		version string
-		want    bool
-	}{
-		{"valid basic version", "1.0.0", true},
-		{"valid version with pre-release", "1.0.0-alpha", true},
-		{"valid version with pre-release and number", "1.0.0-alpha.1", true},
-		{"valid version with build metadata", "1.0.0+20130313144700", true},
-		{"valid complex version", "1.0.0-beta.2+exp.sha.5114f85", true},
-		{"invalid missing patch", "1.0", false},
-		{"invalid with v prefix", "v1.0.0", false},
-		{"invalid negative number", "-1.0.0", false},
-		{"invalid leading zeros", "01.0.0", false},
-		{"invalid letters in version", "1.a.0", false},
-		{"empty version", "", false},
-	}
+	validVersions := []string{"1.0.0", "1.0.0-alpha", "1.0.0-alpha.1", "1.0.0+20130313144700", "1.0.0-beta.2+exp.sha.5114f85"}
+	invalidVersions := []string{"1.0", "v1.0.0", "-1.0.0", "01.0.0", "1.a.0", ""}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := isValidSemanticVersion(tt.version); got != tt.want {
-				t.Errorf("isValidSemanticVersion(%v) = %v, want %v", tt.version, got, tt.want)
-			}
-		})
-	}
+	testStringValidation(t, "isValidSemanticVersion", isValidSemanticVersion, validVersions, invalidVersions)
 }
 
 func TestIsValidReleaseStatus(t *testing.T) {
-	tests := []struct {
-		name   string
-		status string
-		want   bool
-	}{
-		{"valid draft", ReleaseStatusDraft, true},
-		{"valid released", ReleaseStatusReleased, true},
-		{"valid archived", ReleaseStatusArchived, true},
-		{"valid superseded", ReleaseStatusSuperseded, true},
-		{"invalid status", "invalid", false},
-		{"empty status", "", false},
-	}
+	validStatuses := []string{ReleaseStatusDraft, ReleaseStatusReleased, ReleaseStatusArchived, ReleaseStatusSuperseded}
+	invalidStatuses := []string{"invalid", ""}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := isValidReleaseStatus(tt.status); got != tt.want {
-				t.Errorf("isValidReleaseStatus(%v) = %v, want %v", tt.status, got, tt.want)
-			}
-		})
-	}
+	testStringValidation(t, "isValidReleaseStatus", isValidReleaseStatus, validStatuses, invalidStatuses)
 }
 
 func TestRelease_IsReleased(t *testing.T) {

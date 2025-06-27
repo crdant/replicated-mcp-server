@@ -441,26 +441,10 @@ func TestIsValidEmail(t *testing.T) {
 }
 
 func TestIsValidCustomerType(t *testing.T) {
-	tests := []struct {
-		name  string
-		cType string
-		want  bool
-	}{
-		{"valid trial", CustomerTypeTrial, true},
-		{"valid paid", CustomerTypePaid, true},
-		{"valid community", CustomerTypeCommunity, true},
-		{"valid development", CustomerTypeDevelopment, true},
-		{"invalid type", "invalid", false},
-		{"empty type", "", false},
-	}
+	validTypes := []string{CustomerTypeTrial, CustomerTypePaid, CustomerTypeCommunity, CustomerTypeDevelopment}
+	invalidTypes := []string{"invalid", ""}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := isValidCustomerType(tt.cType); got != tt.want {
-				t.Errorf("isValidCustomerType(%v) = %v, want %v", tt.cType, got, tt.want)
-			}
-		})
-	}
+	testStringValidation(t, "isValidCustomerType", isValidCustomerType, validTypes, invalidTypes)
 }
 
 func TestIsValidLicenseType(t *testing.T) {
@@ -488,34 +472,10 @@ func TestIsValidLicenseType(t *testing.T) {
 }
 
 func TestCustomer_IsActive(t *testing.T) {
-	tests := []struct {
-		name     string
-		customer Customer
-		want     bool
-	}{
-		{
-			name: "active customer",
-			customer: Customer{
-				IsArchived: false,
-			},
-			want: true,
-		},
-		{
-			name: "archived customer",
-			customer: Customer{
-				IsArchived: true,
-			},
-			want: false,
-		},
-	}
+	activeCustomer := Customer{IsArchived: false}
+	archivedCustomer := Customer{IsArchived: true}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.customer.IsActive(); got != tt.want {
-				t.Errorf("Customer.IsActive() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	testIsActiveValidation(t, activeCustomer.IsActive, archivedCustomer.IsActive)
 }
 
 func TestCustomer_IsExpired(t *testing.T) {

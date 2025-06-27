@@ -329,31 +329,10 @@ func TestChannel_JSONMarshaling(t *testing.T) {
 }
 
 func TestIsValidChannelSlug(t *testing.T) {
-	tests := []struct {
-		name string
-		slug string
-		want bool
-	}{
-		{"valid simple slug", "stable", true},
-		{"valid slug with numbers", "beta123", true},
-		{"valid slug with hyphens", "release-candidate", true},
-		{"empty slug", "", false},
-		{"slug with uppercase", "Stable", false},
-		{"slug with underscore", "release_candidate", false},
-		{"slug with spaces", "release candidate", false},
-		{"slug starting with hyphen", "-stable", false},
-		{"slug ending with hyphen", "stable-", false},
-		{"slug with special characters", "stable@channel", false},
-		{"valid complex slug", "release-candidate-v2", true},
-	}
+	validSlugs := []string{"stable", "beta123", "release-candidate", "release-candidate-v2"}
+	invalidSlugs := []string{"", "Stable", "release_candidate", "release candidate", "-stable", "stable-", "stable@channel"}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := isValidChannelSlug(tt.slug); got != tt.want {
-				t.Errorf("isValidChannelSlug(%v) = %v, want %v", tt.slug, got, tt.want)
-			}
-		})
-	}
+	testSlugValidation(t, "isValidChannelSlug", isValidChannelSlug, validSlugs, invalidSlugs)
 }
 
 func TestChannel_HasRelease(t *testing.T) {
@@ -401,34 +380,10 @@ func TestChannel_HasRelease(t *testing.T) {
 }
 
 func TestChannel_IsActive(t *testing.T) {
-	tests := []struct {
-		name    string
-		channel Channel
-		want    bool
-	}{
-		{
-			name: "active channel",
-			channel: Channel{
-				IsArchived: false,
-			},
-			want: true,
-		},
-		{
-			name: "archived channel",
-			channel: Channel{
-				IsArchived: true,
-			},
-			want: false,
-		},
-	}
+	activeChannel := Channel{IsArchived: false}
+	archivedChannel := Channel{IsArchived: true}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.channel.IsActive(); got != tt.want {
-				t.Errorf("Channel.IsActive() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	testIsActiveValidation(t, activeChannel.IsActive, archivedChannel.IsActive)
 }
 
 func TestChannel_String(t *testing.T) {

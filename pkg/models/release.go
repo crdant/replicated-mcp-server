@@ -9,8 +9,8 @@ import (
 
 // Release validation constants
 const (
-	MaxNotesLength        = 10000
-	MaxMetadataKeyLength  = 100
+	MaxNotesLength         = 10000
+	MaxMetadataKeyLength   = 100
 	MaxMetadataValueLength = 500
 )
 

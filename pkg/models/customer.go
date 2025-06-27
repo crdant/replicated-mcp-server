@@ -9,9 +9,9 @@ import (
 // Customer validation constants
 const (
 	MaxCustomerNameLength = 255
-	MaxKeyLength         = 100
-	MaxValueLength       = 500
-	EmailParts           = 2
+	MaxKeyLength          = 100
+	MaxValueLength        = 500
+	EmailParts            = 2
 )
 
 // Customer represents a Replicated customer with license and installation details
