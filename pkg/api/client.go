@@ -24,6 +24,9 @@ type Client struct {
 	config     ClientConfig
 	httpClient *http.Client
 	logger     *slog.Logger
+	
+	// Services
+	Applications *ApplicationService
 }
 
 // NewClient creates a new API client with the given configuration
@@ -50,6 +53,9 @@ func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*Client, err
 		},
 		logger: logger,
 	}
+	
+	// Initialize services
+	client.Applications = NewApplicationService(client)
 
 	return client, nil
 }
