@@ -227,7 +227,7 @@ func (c *Client) GetApplication(ctx context.Context, appID string) (*models.Appl
 }
 
 // SearchApplications searches for applications
-func (c *Client) SearchApplications(ctx context.Context, query string, limit, offset int) (*ApplicationList, error) {
+func (c *Client) SearchApplications(ctx context.Context, query string, _, _ int) (*ApplicationList, error) {
 	opts := &ListApplicationsOptions{}
 	return c.Applications.SearchApplications(ctx, query, opts)
 }
@@ -235,7 +235,9 @@ func (c *Client) SearchApplications(ctx context.Context, query string, limit, of
 // Release convenience methods
 
 // ListReleases lists releases for an application
-func (c *Client) ListReleases(ctx context.Context, appID string, limit, offset int) (*PaginatedResponse[Release], error) {
+func (c *Client) ListReleases(
+	ctx context.Context, appID string, limit, offset int,
+) (*PaginatedResponse[Release], error) {
 	opts := &ListOptions{
 		Limit:  limit,
 		Offset: offset,
@@ -249,7 +251,9 @@ func (c *Client) GetRelease(ctx context.Context, appID, releaseID string) (*Rele
 }
 
 // SearchReleases searches for releases within an application
-func (c *Client) SearchReleases(ctx context.Context, appID, query string, limit, offset int) (*PaginatedResponse[Release], error) {
+func (c *Client) SearchReleases(
+	ctx context.Context, appID, query string, limit, offset int,
+) (*PaginatedResponse[Release], error) {
 	opts := &SearchOptions{
 		Query:  query,
 		Limit:  limit,
@@ -261,7 +265,9 @@ func (c *Client) SearchReleases(ctx context.Context, appID, query string, limit,
 // Channel convenience methods
 
 // ListChannels lists channels for an application
-func (c *Client) ListChannels(ctx context.Context, appID string, limit, offset int) (*PaginatedResponse[Channel], error) {
+func (c *Client) ListChannels(
+	ctx context.Context, appID string, limit, offset int,
+) (*PaginatedResponse[Channel], error) {
 	opts := &ListOptions{
 		Limit:  limit,
 		Offset: offset,
@@ -275,7 +281,9 @@ func (c *Client) GetChannel(ctx context.Context, appID, channelID string) (*Chan
 }
 
 // SearchChannels searches for channels within an application
-func (c *Client) SearchChannels(ctx context.Context, appID, query string, limit, offset int) (*PaginatedResponse[Channel], error) {
+func (c *Client) SearchChannels(
+	ctx context.Context, appID, query string, limit, offset int,
+) (*PaginatedResponse[Channel], error) {
 	opts := &SearchOptions{
 		Query:  query,
 		Limit:  limit,
@@ -287,7 +295,9 @@ func (c *Client) SearchChannels(ctx context.Context, appID, query string, limit,
 // Customer convenience methods
 
 // ListCustomers lists customers for an application
-func (c *Client) ListCustomers(ctx context.Context, appID string, limit, offset int) (*PaginatedResponse[Customer], error) {
+func (c *Client) ListCustomers(
+	ctx context.Context, appID string, limit, offset int,
+) (*PaginatedResponse[Customer], error) {
 	opts := &ListOptions{
 		Limit:  limit,
 		Offset: offset,
@@ -301,7 +311,9 @@ func (c *Client) GetCustomer(ctx context.Context, appID, customerID string) (*Cu
 }
 
 // SearchCustomers searches for customers within an application
-func (c *Client) SearchCustomers(ctx context.Context, appID, query string, limit, offset int) (*PaginatedResponse[Customer], error) {
+func (c *Client) SearchCustomers(
+	ctx context.Context, appID, query string, limit, offset int,
+) (*PaginatedResponse[Customer], error) {
 	opts := &SearchOptions{
 		Query:  query,
 		Limit:  limit,

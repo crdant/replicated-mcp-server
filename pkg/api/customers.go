@@ -103,7 +103,9 @@ func (s *CustomerService) Get(ctx context.Context, appID, customerID string) (*C
 }
 
 // Search searches for customers within an application based on query criteria
-func (s *CustomerService) Search(ctx context.Context, appID string, opts *SearchOptions) (*PaginatedResponse[Customer], error) {
+func (s *CustomerService) Search(
+	ctx context.Context, appID string, opts *SearchOptions,
+) (*PaginatedResponse[Customer], error) {
 	if appID == "" {
 		return nil, fmt.Errorf("application ID is required")
 	}
@@ -113,7 +115,8 @@ func (s *CustomerService) Search(ctx context.Context, appID string, opts *Search
 
 	// Since there's no dedicated search endpoint for customers, use list and filter client-side
 	listOpts := &ListOptions{
-		Limit:  100, // Get more results for better search coverage
+		Limit: 100, // Get more results for better search coverage
+		//nolint:mnd // 100 is a reasonable default for search coverage
 		Offset: opts.Offset,
 	}
 
@@ -126,7 +129,8 @@ func (s *CustomerService) Search(ctx context.Context, appID string, opts *Search
 	var filteredCustomers []Customer
 	queryLower := strings.ToLower(strings.TrimSpace(opts.Query))
 
-	for _, customer := range customers.Data {
+	for i := range customers.Data {
+		customer := customers.Data[i]
 		// Search in name, email, type, and status (case-insensitive)
 		if strings.Contains(strings.ToLower(customer.Name), queryLower) ||
 			strings.Contains(strings.ToLower(customer.Email), queryLower) ||

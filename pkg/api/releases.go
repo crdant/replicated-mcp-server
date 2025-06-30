@@ -102,7 +102,9 @@ func (s *ReleaseService) Get(ctx context.Context, appID, releaseID string) (*Rel
 }
 
 // Search searches for releases within an application based on query criteria
-func (s *ReleaseService) Search(ctx context.Context, appID string, opts *SearchOptions) (*PaginatedResponse[Release], error) {
+func (s *ReleaseService) Search(
+	ctx context.Context, appID string, opts *SearchOptions,
+) (*PaginatedResponse[Release], error) {
 	if appID == "" {
 		return nil, fmt.Errorf("application ID is required")
 	}

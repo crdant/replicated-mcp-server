@@ -103,7 +103,9 @@ func (s *ChannelService) Get(ctx context.Context, appID, channelID string) (*Cha
 }
 
 // Search searches for channels within an application based on query criteria
-func (s *ChannelService) Search(ctx context.Context, appID string, opts *SearchOptions) (*PaginatedResponse[Channel], error) {
+func (s *ChannelService) Search(
+	ctx context.Context, appID string, opts *SearchOptions,
+) (*PaginatedResponse[Channel], error) {
 	if appID == "" {
 		return nil, fmt.Errorf("application ID is required")
 	}
@@ -113,7 +115,8 @@ func (s *ChannelService) Search(ctx context.Context, appID string, opts *SearchO
 
 	// Since there's no dedicated search endpoint for channels, use list and filter client-side
 	listOpts := &ListOptions{
-		Limit:  100, // Get more results for better search coverage
+		Limit: 100, // Get more results for better search coverage
+		//nolint:mnd // 100 is a reasonable default for search coverage
 		Offset: opts.Offset,
 	}
 
