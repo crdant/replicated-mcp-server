@@ -115,8 +115,7 @@ func (s *CustomerService) Search(
 
 	// Since there's no dedicated search endpoint for customers, use list and filter client-side
 	listOpts := &ListOptions{
-		Limit: 100, // Get more results for better search coverage
-		//nolint:mnd // 100 is a reasonable default for search coverage
+		Limit:  100, //nolint:mnd // 100 is a reasonable default for search coverage
 		Offset: opts.Offset,
 	}
 
