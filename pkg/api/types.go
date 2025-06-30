@@ -95,14 +95,14 @@ type Channel struct {
 
 // Customer represents a customer in the Replicated Vendor Portal
 type Customer struct {
-	ID           string    `json:"id"`
-	Name         string    `json:"name"`
-	Email        string    `json:"email,omitempty"`
-	Type         string    `json:"type,omitempty"`
-	Status       string    `json:"status,omitempty"`
-	LicenseID    string    `json:"license_id,omitempty"`
-	ChannelID    string    `json:"channel_id,omitempty"`
-	ChannelName  string    `json:"channel_name,omitempty"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Email       string    `json:"email,omitempty"`
+	Type        string    `json:"type,omitempty"`
+	Status      string    `json:"status,omitempty"`
+	LicenseID   string    `json:"license_id,omitempty"`
+	ChannelID   string    `json:"channel_id,omitempty"`
+	ChannelName string    `json:"channel_name,omitempty"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }

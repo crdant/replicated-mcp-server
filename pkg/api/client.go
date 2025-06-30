@@ -24,7 +24,7 @@ type Client struct {
 	config     ClientConfig
 	httpClient *http.Client
 	logger     *slog.Logger
-	
+
 	// Services
 	Applications *ApplicationService
 }
@@ -53,7 +53,7 @@ func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*Client, err
 		},
 		logger: logger,
 	}
-	
+
 	// Initialize services
 	client.Applications = NewApplicationService(client)
 
