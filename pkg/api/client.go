@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/crdant/replicated-mcp-server/pkg/models"
 )
 
 // Constants for HTTP client configuration
@@ -27,6 +29,9 @@ type Client struct {
 
 	// Services
 	Applications *ApplicationService
+	Releases     *ReleaseService
+	Channels     *ChannelService
+	Customers    *CustomerService
 }
 
 // NewClient creates a new API client with the given configuration
@@ -56,6 +61,9 @@ func NewClientWithLogger(config ClientConfig, logger *slog.Logger) (*Client, err
 
 	// Initialize services
 	client.Applications = NewApplicationService(client)
+	client.Releases = NewReleaseService(client)
+	client.Channels = NewChannelService(client)
+	client.Customers = NewCustomerService(client)
 
 	return client, nil
 }
@@ -185,4 +193,119 @@ func (c *Client) ConvertHTTPError(resp *http.Response) *Error {
 	}
 
 	return apiError
+}
+
+// Application convenience methods
+
+// ListApplications lists applications with pagination support
+func (c *Client) ListApplications(ctx context.Context, limit, offset int) (*ApplicationList, error) {
+	opts := &ListApplicationsOptions{}
+	apps, err := c.Applications.ListApplications(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	// Apply client-side pagination if needed
+	if offset > 0 && offset < len(apps.Applications) {
+		if offset+limit <= len(apps.Applications) {
+			apps.Applications = apps.Applications[offset : offset+limit]
+		} else {
+			apps.Applications = apps.Applications[offset:]
+		}
+	} else if offset >= len(apps.Applications) {
+		apps.Applications = []models.Application{}
+	} else if limit > 0 && limit < len(apps.Applications) {
+		apps.Applications = apps.Applications[:limit]
+	}
+
+	return apps, nil
+}
+
+// GetApplication retrieves a specific application by ID
+func (c *Client) GetApplication(ctx context.Context, appID string) (*models.Application, error) {
+	return c.Applications.GetApplication(ctx, appID)
+}
+
+// SearchApplications searches for applications
+func (c *Client) SearchApplications(ctx context.Context, query string, limit, offset int) (*ApplicationList, error) {
+	opts := &ListApplicationsOptions{}
+	return c.Applications.SearchApplications(ctx, query, opts)
+}
+
+// Release convenience methods
+
+// ListReleases lists releases for an application
+func (c *Client) ListReleases(ctx context.Context, appID string, limit, offset int) (*PaginatedResponse[Release], error) {
+	opts := &ListOptions{
+		Limit:  limit,
+		Offset: offset,
+	}
+	return c.Releases.List(ctx, appID, opts)
+}
+
+// GetRelease retrieves a specific release
+func (c *Client) GetRelease(ctx context.Context, appID, releaseID string) (*Release, error) {
+	return c.Releases.Get(ctx, appID, releaseID)
+}
+
+// SearchReleases searches for releases within an application
+func (c *Client) SearchReleases(ctx context.Context, appID, query string, limit, offset int) (*PaginatedResponse[Release], error) {
+	opts := &SearchOptions{
+		Query:  query,
+		Limit:  limit,
+		Offset: offset,
+	}
+	return c.Releases.Search(ctx, appID, opts)
+}
+
+// Channel convenience methods
+
+// ListChannels lists channels for an application
+func (c *Client) ListChannels(ctx context.Context, appID string, limit, offset int) (*PaginatedResponse[Channel], error) {
+	opts := &ListOptions{
+		Limit:  limit,
+		Offset: offset,
+	}
+	return c.Channels.List(ctx, appID, opts)
+}
+
+// GetChannel retrieves a specific channel
+func (c *Client) GetChannel(ctx context.Context, appID, channelID string) (*Channel, error) {
+	return c.Channels.Get(ctx, appID, channelID)
+}
+
+// SearchChannels searches for channels within an application
+func (c *Client) SearchChannels(ctx context.Context, appID, query string, limit, offset int) (*PaginatedResponse[Channel], error) {
+	opts := &SearchOptions{
+		Query:  query,
+		Limit:  limit,
+		Offset: offset,
+	}
+	return c.Channels.Search(ctx, appID, opts)
+}
+
+// Customer convenience methods
+
+// ListCustomers lists customers for an application
+func (c *Client) ListCustomers(ctx context.Context, appID string, limit, offset int) (*PaginatedResponse[Customer], error) {
+	opts := &ListOptions{
+		Limit:  limit,
+		Offset: offset,
+	}
+	return c.Customers.List(ctx, appID, opts)
+}
+
+// GetCustomer retrieves a specific customer
+func (c *Client) GetCustomer(ctx context.Context, appID, customerID string) (*Customer, error) {
+	return c.Customers.Get(ctx, appID, customerID)
+}
+
+// SearchCustomers searches for customers within an application
+func (c *Client) SearchCustomers(ctx context.Context, appID, query string, limit, offset int) (*PaginatedResponse[Customer], error) {
+	opts := &SearchOptions{
+		Query:  query,
+		Limit:  limit,
+		Offset: offset,
+	}
+	return c.Customers.Search(ctx, appID, opts)
 }

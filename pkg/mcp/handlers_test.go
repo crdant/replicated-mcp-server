@@ -32,15 +32,22 @@ func TestHandleListApplications(t *testing.T) {
 	defer server.Close()
 
 	// Create API client
+	clientConfig := api.ClientConfig{
+		APIToken: "test-token",
+		BaseURL:  server.URL,
+		Timeout:  30 * time.Second,
+	}
+	logger := logging.NewLogger("error")
+	apiClient, err := api.NewClient(clientConfig)
+	if err != nil {
+		t.Fatalf("Failed to create API client: %v", err)
+	}
+
+	// Create config for MCP server
 	cfg := &config.Config{
 		APIToken: "test-token",
 		Timeout:  30 * time.Second,
 		Endpoint: server.URL,
-	}
-	logger := logging.NewLogger("error")
-	apiClient, err := api.NewClient(cfg, logger)
-	if err != nil {
-		t.Fatalf("Failed to create API client: %v", err)
 	}
 
 	// Create MCP server with API client
@@ -106,15 +113,22 @@ func TestHandleGetApplication(t *testing.T) {
 	defer server.Close()
 
 	// Create API client
+	clientConfig := api.ClientConfig{
+		APIToken: "test-token",
+		BaseURL:  server.URL,
+		Timeout:  30 * time.Second,
+	}
+	logger := logging.NewLogger("error")
+	apiClient, err := api.NewClient(clientConfig)
+	if err != nil {
+		t.Fatalf("Failed to create API client: %v", err)
+	}
+
+	// Create config for MCP server
 	cfg := &config.Config{
 		APIToken: "test-token",
 		Timeout:  30 * time.Second,
 		Endpoint: server.URL,
-	}
-	logger := logging.NewLogger("error")
-	apiClient, err := api.NewClient(cfg, logger)
-	if err != nil {
-		t.Fatalf("Failed to create API client: %v", err)
 	}
 
 	// Create MCP server with API client
@@ -180,15 +194,22 @@ func TestHandleSearchApplications(t *testing.T) {
 	defer server.Close()
 
 	// Create API client
+	clientConfig := api.ClientConfig{
+		APIToken: "test-token",
+		BaseURL:  server.URL,
+		Timeout:  30 * time.Second,
+	}
+	logger := logging.NewLogger("error")
+	apiClient, err := api.NewClient(clientConfig)
+	if err != nil {
+		t.Fatalf("Failed to create API client: %v", err)
+	}
+
+	// Create config for MCP server
 	cfg := &config.Config{
 		APIToken: "test-token",
 		Timeout:  30 * time.Second,
 		Endpoint: server.URL,
-	}
-	logger := logging.NewLogger("error")
-	apiClient, err := api.NewClient(cfg, logger)
-	if err != nil {
-		t.Fatalf("Failed to create API client: %v", err)
 	}
 
 	// Create MCP server with API client

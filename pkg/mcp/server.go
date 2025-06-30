@@ -46,8 +46,21 @@ func NewServer(cfg *config.Config, logger logging.Logger) (*Server, error) {
 		return nil, fmt.Errorf("failed to create API client: API token is required")
 	}
 
-	// Create API client
-	apiClient, err := api.NewClient(cfg, logger)
+	// Create API client configuration
+	clientConfig := api.ClientConfig{
+		APIToken: cfg.APIToken,
+		BaseURL:  cfg.Endpoint,
+		Timeout:  cfg.Timeout,
+	}
+
+	// Set default base URL if not provided
+	if clientConfig.BaseURL == "" {
+		clientConfig.BaseURL = "https://api.replicated.com"
+	}
+
+	// Create API client - the API client uses slog.Logger but we can use NewClient (without logger)
+	// since the client has a default no-op logger
+	apiClient, err := api.NewClient(clientConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create API client: %w", err)
 	}
