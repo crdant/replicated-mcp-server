@@ -21,7 +21,9 @@ func NewChannelService(client *Client) *ChannelService {
 }
 
 // List retrieves a paginated list of channels for a specific application
-func (s *ChannelService) List(ctx context.Context, appID string, opts *ListOptions) (*PaginatedResponse[Channel], error) {
+func (s *ChannelService) List(
+	ctx context.Context, appID string, opts *ListOptions,
+) (*PaginatedResponse[Channel], error) {
 	if appID == "" {
 		return nil, fmt.Errorf("application ID is required")
 	}

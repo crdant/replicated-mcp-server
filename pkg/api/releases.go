@@ -20,7 +20,9 @@ func NewReleaseService(client *Client) *ReleaseService {
 }
 
 // List retrieves a paginated list of releases for a specific application
-func (s *ReleaseService) List(ctx context.Context, appID string, opts *ListOptions) (*PaginatedResponse[Release], error) {
+func (s *ReleaseService) List(
+	ctx context.Context, appID string, opts *ListOptions,
+) (*PaginatedResponse[Release], error) {
 	if appID == "" {
 		return nil, fmt.Errorf("application ID is required")
 	}

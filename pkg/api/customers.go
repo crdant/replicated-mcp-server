@@ -21,7 +21,9 @@ func NewCustomerService(client *Client) *CustomerService {
 }
 
 // List retrieves a paginated list of customers for a specific application
-func (s *CustomerService) List(ctx context.Context, appID string, opts *ListOptions) (*PaginatedResponse[Customer], error) {
+func (s *CustomerService) List(
+	ctx context.Context, appID string, opts *ListOptions,
+) (*PaginatedResponse[Customer], error) {
 	if appID == "" {
 		return nil, fmt.Errorf("application ID is required")
 	}

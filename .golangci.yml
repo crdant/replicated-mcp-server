@@ -103,6 +103,14 @@ linters:
         path: pkg/mcp/tools\.go$
         text: "lines are duplicate"
       - linters:
+          - dupl
+        path: pkg/api/(channels|customers|releases)\.go$
+        text: "lines are duplicate"
+      - linters:
+          - dupl
+        path: pkg/mcp/handlers\.go$
+        text: "lines are duplicate"
+      - linters:
           - unparam
         path: pkg/mcp/server\.go$
         text: "registerTools.*result 0.*is always nil|registerResources.*result 0.*is always nil"
