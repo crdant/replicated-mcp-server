@@ -71,16 +71,12 @@ lint:
 		exit 1; \
 	fi
 
-# Install golangci-lint (Linux/macOS)
+# Install golangci-lint (Linux/macOS) - matches CI version
 .PHONY: install-linter
 install-linter:
-	@echo "Installing golangci-lint..."
-	@if command -v golangci-lint >/dev/null 2>&1; then \
-		echo "✅ golangci-lint already installed"; \
-	else \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin; \
-		echo "✅ golangci-lint installed"; \
-	fi
+	@echo "Installing golangci-lint (latest version to match CI)..."
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin latest
+	@echo "✅ golangci-lint installed (latest version)"
 
 # Fix linting issues that can be auto-fixed
 .PHONY: lint-fix
