@@ -22,12 +22,12 @@ const (
 func TestHandleListApplications(t *testing.T) {
 	// Create test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/v3/apps" {
-			t.Errorf("Expected path /v3/apps, got %s", r.URL.Path)
+		if r.URL.Path != "/vendor/v3/apps" {
+			t.Errorf("Expected path /vendor/v3/apps, got %s", r.URL.Path)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"apps": [{"id": "app1", "name": "Test App", "slug": "test-app"}]}`))
+		_, _ = w.Write([]byte(`{"applications": [{"id": "app1", "name": "Test App", "slug": "test-app"}]}`))
 	}))
 	defer server.Close()
 
@@ -87,28 +87,28 @@ func TestHandleListApplications(t *testing.T) {
 	}
 
 	// Parse JSON response
-	var apps []api.Application
-	if err := json.Unmarshal([]byte(textContent.Text), &apps); err != nil {
+	var appList api.ApplicationList
+	if err := json.Unmarshal([]byte(textContent.Text), &appList); err != nil {
 		t.Fatalf("Failed to parse response: %v", err)
 	}
 
-	if len(apps) != 1 {
-		t.Fatalf("Expected 1 app, got %d", len(apps))
+	if len(appList.Applications) != 1 {
+		t.Fatalf("Expected 1 app, got %d", len(appList.Applications))
 	}
-	if apps[0].ID != testAppID {
-		t.Errorf("Expected app ID 'app1', got %s", apps[0].ID)
+	if appList.Applications[0].ID != testAppID {
+		t.Errorf("Expected app ID 'app1', got %s", appList.Applications[0].ID)
 	}
 }
 
 func TestHandleGetApplication(t *testing.T) {
 	// Create test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/v3/app/test-app" {
-			t.Errorf("Expected path /v3/app/test-app, got %s", r.URL.Path)
+		if r.URL.Path != "/vendor/v3/app/test-app" {
+			t.Errorf("Expected path /vendor/v3/app/test-app, got %s", r.URL.Path)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"app": {"id": "app1", "name": "Test App", "slug": "test-app"}}`))
+		_, _ = w.Write([]byte(`{"id": "app1", "name": "Test App", "slug": "test-app"}`))
 	}))
 	defer server.Close()
 
@@ -178,18 +178,14 @@ func TestHandleGetApplication(t *testing.T) {
 }
 
 func TestHandleSearchApplications(t *testing.T) {
-	// Create test server
+	// Create test server - search uses list endpoint with client-side filtering
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/v3/apps/search" {
-			t.Errorf("Expected path /v3/apps/search, got %s", r.URL.Path)
-		}
-		query := r.URL.Query().Get("q")
-		if query != "test" {
-			t.Errorf("Expected query 'test', got %s", query)
+		if r.URL.Path != "/vendor/v3/apps" {
+			t.Errorf("Expected path /vendor/v3/apps, got %s", r.URL.Path)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"apps": [{"id": "app1", "name": "Test App", "slug": "test-app"}]}`))
+		_, _ = w.Write([]byte(`{"applications": [{"id": "app1", "name": "Test App", "slug": "test-app"}]}`))
 	}))
 	defer server.Close()
 
@@ -249,15 +245,15 @@ func TestHandleSearchApplications(t *testing.T) {
 	}
 
 	// Parse JSON response
-	var apps []api.Application
-	if err := json.Unmarshal([]byte(textContent.Text), &apps); err != nil {
+	var appList api.ApplicationList
+	if err := json.Unmarshal([]byte(textContent.Text), &appList); err != nil {
 		t.Fatalf("Failed to parse response: %v", err)
 	}
 
-	if len(apps) != 1 {
-		t.Fatalf("Expected 1 app, got %d", len(apps))
+	if len(appList.Applications) != 1 {
+		t.Fatalf("Expected 1 app, got %d", len(appList.Applications))
 	}
-	if apps[0].ID != testAppID {
-		t.Errorf("Expected app ID 'app1', got %s", apps[0].ID)
+	if appList.Applications[0].ID != testAppID {
+		t.Errorf("Expected app ID 'app1', got %s", appList.Applications[0].ID)
 	}
 }
