@@ -5,9 +5,9 @@ go 1.23.0
 toolchain go1.24.4
 
 require (
-	github.com/mark3labs/mcp-go v0.37.0
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.7
+	github.com/mark3labs/mcp-go v0.39.1
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/pflag v1.0.9
 )
 
 require (
